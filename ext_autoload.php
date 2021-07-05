@@ -10,6 +10,7 @@ return array(
     'tx_caretaker_abstractnode_testcase' => $extensionPath . 'tests/tx_caretaker_AbstractNode_testcase.php',
     'tx_caretaker_abstractnotificationservice' => $extensionClassesPath . 'services/notifications/class.tx_caretaker_AbstractNotificationService.php',
     'tx_caretaker_advancednotificationservice' => $extensionClassesPath . 'services/notifications/advanced/class.tx_caretaker_AdvancedNotificationService.php',
+    'tx_caretaker_slacknotificationservice' => $extensionClassesPath . 'services/notifications/class.tx_caretaker_SlackNotificationService.php',
     'tx_caretaker_aggregatornode' => $extensionClassesPath . 'nodes/class.tx_caretaker_AggregatorNode.php',
     'tx_caretaker_aggregatornode_stub' => $extensionPath . 'tests/tx_caretaker_AggregatorNode_testcase.php',
     'tx_caretaker_aggregatornode_testcase' => $extensionPath . 'tests/tx_caretaker_AggregatorNode_testcase.php',
