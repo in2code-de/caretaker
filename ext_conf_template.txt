@@ -7,6 +7,12 @@ notifications.advanced.enabled = 1
 # cat=caretaker/enable; type=boolean; label=Mail Notification: Enables a simple notfication system via e-mail. Easy to setup an suitable for small setups.
 notifications.simple_mail.enabled = 0
 
+# cat=caretaker/enable; type=boolean; label=Slack Notification: Enables notifications via Slack to the channel configured in the instance
+notifications.slack.enabled = 0
+
+# cat=caretaker/enable; type=string; label=Token for the Slack API
+notifications.slack.token =
+
 # cat=caretaker/enable; type=boolean; label=CLI Notifications: Enables a simple notfication system for the CLI interface.
 notifications.cli.enabled = 1
 

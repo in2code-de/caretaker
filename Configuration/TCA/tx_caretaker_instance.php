@@ -248,6 +248,24 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = array(
                 ),
             ),
         ),
+        'slack_notification' => array(
+            'label' => 'Enable slack notification',
+            'onChange' => 'reload',
+            'config' => array(
+                'type' => 'check',
+            ),
+        ),
+        'slack_notification_channel' => array(
+            'label' => 'Channel',
+            'displayCond' => 'FIELD:slack_notification:REQ:true',
+            'config' => array(
+                'type' => 'select',
+                'renderType' => 'selectMultipleSideBySide',
+                'maxitems' => 1,
+                'enableMultiSelectFilterTextfield' => true,
+                'itemsProcFunc' => Caretaker\Caretaker\UserFunc\SlackChannelsUserFunc::class . '->getChannels'
+            ),
+        ),
     ),
     'types' => array(
         '0' => array(
@@ -260,7 +278,7 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = array(
                 --div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.description, description, 
                 --div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.relations, groups, tests, 
                 --div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.contacts, contacts, ' .
-                ($advancedNotificationsEnabled ? '--div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.notifications, notification_strategies, ' : '') .
+                ($advancedNotificationsEnabled ? '--div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.notifications, notification_strategies, slack_notification, slack_notification_channel, ' : '') .
                 '--div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.testconfigurations, ' .
                 ($enableNewConfigurationOverrides ? 'configuration_overrides, ' : 'testconfigurations,') .
                 '--div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.access, hidden, starttime, endtime, fe_group',

@@ -59,6 +59,8 @@ CREATE TABLE tx_caretaker_instance (
     contacts int(11) DEFAULT '0' NOT NULL,
     notifications text,
     notification_strategies int(11) DEFAULT '0' NOT NULL,
+    slack_notification tinyint(4) DEFAULT '0' NOT NULL,
+    slack_notification_channel varchar(255) DEFAULT '' NOT NULL,
 
     testconfigurations text NOT NULL,
     configuration_overrides int(11) NOT NULL DEFAULT '0',
