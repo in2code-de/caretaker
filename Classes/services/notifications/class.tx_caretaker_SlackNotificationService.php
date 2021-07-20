@@ -36,7 +36,7 @@ class tx_caretaker_SlackNotificationService extends tx_caretaker_AbstractNotific
     public function addNotification($event, $node, $result = null, $lastResult = null)
     {
         if ($node instanceof tx_caretaker_InstanceNode && $result instanceof tx_caretaker_AggregatorResult) {
-            if ($result->getNumERROR() === 0 && $result->getNumWARNING() === 0 && $result->getNumUNDEFINED() === 0) {
+            if ($result->getNumERROR() === 0 && $result->getNumWARNING() === 0) {
 //              Stop if everything is ok
                 return;
             }
