@@ -72,6 +72,7 @@ $GLOBALS['TCA']['tx_caretaker_instance_override'] = array(
                 'items' => array(
                     array('', ''),
                     array('CURLOPT_SSL_VERIFYPEER', 'CURLOPT_SSL_VERIFYPEER'),
+                    array('CURLOPT_SSL_VERIFYHOST', 'CURLOPT_SSL_VERIFYHOST'),
                     array('CURLOPT_TIMEOUT_MS', 'CURLOPT_TIMEOUT_MS'),
                     array('CURLOPT_INTERFACE', 'CURLOPT_INTERFACE'),
                     array('CURLOPT_USERPWD (user:password)', 'CURLOPT_USERPWD'),
@@ -107,7 +108,12 @@ $GLOBALS['TCA']['tx_caretaker_instance_override'] = array(
                     array('LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance_override.curl_value.false', 'false'),
                 ),
             ),
-            'displayCond' => 'FIELD:curl_option:=:CURLOPT_SSL_VERIFYPEER',
+            'displayCond' => [
+                'OR' => [
+                    'FIELD:curl_option:=:CURLOPT_SSL_VERIFYPEER',
+                    'FIELD:curl_option:=:CURLOPT_SSL_VERIFYHOST',
+                ],
+            ]
         ),
         'curl_value_httpauth' => array(
             'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance_override.curl_value',
