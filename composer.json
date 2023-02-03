@@ -11,8 +11,8 @@
     }
   ],
   "require": {
-    "typo3/cms-core": "^7.6|^8.7",
-    "caretaker/caretaker_instance": "2.x-dev",
+    "typo3/cms-core": "^12.1",
+    "caretaker/caretaker_instance": "dev-feature/V12",
     "guzzlehttp/guzzle": "^6.5"
   },
   "require-dev": {
