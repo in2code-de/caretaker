@@ -1,9 +1,15 @@
 <?php
 
 use Caretaker\Caretaker\services\Slack\Client;
+use Caretaker\Caretaker\services\SlackNotificationTimerService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class tx_caretaker_SlackNotificationService extends tx_caretaker_AbstractNotificationService
 {
+    public const SLACK_NOTIFICATION_TYPE_EVERYTIME = 0;
+    public const SLACK_NOTIFICATION_TYPE_BY_INTERVAL = 1;
+
     /**
      * Array of notifications to send to slack
      *
@@ -20,13 +26,24 @@ class tx_caretaker_SlackNotificationService extends tx_caretaker_AbstractNotific
     protected $notifications = [];
 
     /**
+     * @var null|\TYPO3\CMS\Core\Log\Logger
+     */
+    protected $logger = null;
+
+    /**
+     * @var null|\Caretaker\Caretaker\services\SlackNotificationTimerService
+     */
+    protected $slackNotificationTimerService = null;
+
+    /**
      * Constructor
      * reads the service configuration
      */
     public function __construct()
     {
         parent::__construct('slack');
-
+        $this->logger = GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        $this->slackNotificationTimerService = GeneralUtility::makeInstance(SlackNotificationTimerService::class);
     }
 
     /**
@@ -36,21 +53,130 @@ class tx_caretaker_SlackNotificationService extends tx_caretaker_AbstractNotific
     public function addNotification($event, $node, $result = null, $lastResult = null)
     {
         if ($node instanceof tx_caretaker_InstanceNode && $result instanceof tx_caretaker_AggregatorResult) {
-            if ($result->getNumERROR() === 0 && $result->getNumWARNING() === 0) {
-//              Stop if everything is ok
-                return;
-            }
-
             $slackNotificationEnabled = (bool)$node->getProperty('slack_notification');
             $slackChannel = $node->getProperty('slack_notification_channel');
 
+            if ($result->getNumERROR() === 0 && $result->getNumWARNING() === 0) {
+                // set tx_caretaker_notification_log for the current node as deleted
+                if ($this->slackNotificationTimerService->hasActiveLog($node->getUid())) {
+                    if ($node->getProperty('slack_notification_if_fixed')) {
+                        $this->notifications[] = [
+                            'channel' => $slackChannel,
+                            'message' => $this->getErrorsFixedMessage($node),
+                        ];
+                    }
+
+                    $currentActiveLog = $this->slackNotificationTimerService->getActiveLog($node->getUid());
+                    $this->slackNotificationTimerService->deleteLog((int)$currentActiveLog['uid']);
+                }
+                return;
+            }
+
             if ($slackNotificationEnabled && !empty($slackChannel)) {
-                $this->notifications[] = [
-                    'channel' => $slackChannel,
-                    'message' => '*' . $node->getTitle() . '*' . PHP_EOL . $result->getLocallizedInfotext(),
-                ];
+                if ((int)$node->getProperty('slack_notification_interval_type') === self::SLACK_NOTIFICATION_TYPE_BY_INTERVAL) {
+                    $sendNotification = $this->shouldSendIntervalNotification($node, $result);
+                } else {
+                    $sendNotification = true;
+                }
+
+                if ($sendNotification) {
+                    $this->notifications[] = [
+                        'channel' => $slackChannel,
+                        'message' => $this->getSlackErrorMessage($node, $result),
+                    ];
+                }
             }
         }
+    }
+
+    private function getSlackErrorMessage($node, $result): string {
+        $message = '*Fehler auf: ' . $node->getTitle() . '*' . PHP_EOL . ' ' . PHP_EOL;
+        $isFirstError = true;
+        $isFirstUndefined = true;
+
+            /** @var tx_caretaker_ResultMessage $submessage */
+        foreach ($result->getSubMessages() as $submessage) {
+                switch ($submessage->getText()) {
+                    case 'LLL:EXT:caretaker/Resources/Private/Language/locallang.xlf:aggregator_result_submessage_error':
+                        if ($isFirstError) {
+                            $message .= PHP_EOL . PHP_EOL . ':x: *Fehler:* :x:' . PHP_EOL;
+                        }
+
+                        $message .= 'Testgruppe: *' . implode(', ', $submessage->getValues()) . '*' . PHP_EOL;
+                        $isFirstError = false;
+                        break;
+                    case 'LLL:EXT:caretaker/Resources/Private/Language/locallang.xlf:aggregator_result_submessage_undefined':
+                        if ($isFirstUndefined) {
+                            $message .= PHP_EOL . PHP_EOL . ':warning: *Undefinierter Zustand:* :warning:' . PHP_EOL;
+                        }
+
+                        $message .= 'Testgruppe: *' . implode(', ', $submessage->getValues()) . '*' . PHP_EOL;
+                        $isFirstUndefined = false;
+                        break;
+                }
+            }
+
+        return  $message;
+    }
+
+    private function getErrorsFixedMessage($node): string {
+        return ':white_check_mark: Fehler auf *' . $node->getTitle() . '* wurden behoben!';
+    }
+
+    private function shouldSendIntervalNotification($node, $result): bool {
+
+        if ($this->slackNotificationTimerService->hasActiveLog($node->getProperty('uid'))) {
+            $lastNotificationLog = $this->slackNotificationTimerService->getActiveLog($node->getProperty('uid'));
+            $currentHash = $result->getResultHash();
+            // problems have not changed
+            if ($lastNotificationLog['result_hash'] === $result->getResultHash()) {
+                $logExpireTime = (int)$lastNotificationLog['tstamp'] + ($node->getProperty('slack_notification_interval') * 60 * 60);
+                if (time() > $logExpireTime) {
+                    // notification is expired
+
+                    // - set old tx_caretaker_notification_log as deleted
+                    $this->slackNotificationTimerService->deleteLog((int)$lastNotificationLog['uid']);
+
+                    // - create new tx_caretaker_notification_log with current values
+                    $this->slackNotificationTimerService->createLog($node->getProperty('uid'), $result->getResultHash());
+
+                    // - send a notification
+                    return true;
+                } else {
+                    // nothing to do!
+                    return false;
+                }
+            } else {
+                // resend notification if the result hash ( has changed
+
+                // - set the old tx_caretaker_notification_log as deleted
+                $this->slackNotificationTimerService->deleteLog((int)$lastNotificationLog['uid']);
+
+                // - create a new tx_caretaker_notification_log with current values
+                $this->slackNotificationTimerService->createLog($node->getProperty('uid'), $result->getResultHash());
+
+                // - send a new notification ? maybe add an option to change the behaviour
+                return true;
+            }
+
+        } else {
+            // create new notification log entry
+            $this->slackNotificationTimerService->createLog($node->getProperty('uid'), $result->getResultHash());
+            $this->logger->debug('New intervall notification was sent.', ['node' => $node]);
+            return true;
+        }
+    }
+
+    /**
+     * this override sends slack notifications also if executed via "refresh" in the backend
+     * (if the basic slack notification is enabled in the extension settings).
+     *
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        $enabled = (bool)$this->getConfigValue('enabled');
+        return $enabled === true && TYPO3_MODE == 'BE';
     }
 
     /**
