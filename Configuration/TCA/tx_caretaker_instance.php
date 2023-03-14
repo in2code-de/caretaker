@@ -266,6 +266,47 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = array(
                 'itemsProcFunc' => Caretaker\Caretaker\UserFunc\SlackChannelsUserFunc::class . '->getChannels'
             ),
         ),
+        'slack_notification_interval_type' => array(
+            'label' => 'Notification Interval',
+            'displayCond' => 'FIELD:slack_notification:REQ:true',
+            'onChange' => 'reload',
+            'config' => array(
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => [
+                    ['bei jedem Fehlschlag', 0],
+                    ['beim ersten Fehlschlag und dann nach eingestelltem Intervall', 1],
+                ],
+                'default' => 0
+            ),
+        ),
+        'slack_notification_interval' => array(
+            'label' => 'Notification Intervall (in Stunden)',
+            'displayCond' => [
+                'AND' => [
+                    'FIELD:slack_notification:REQ:true',
+                    'FIELD:slack_notification_interval_type:=:1',
+                ],
+            ] ,
+            'config' => array(
+                'type' => 'input',
+                'size' => 10,
+                'eval' => 'trim,int',
+            ),
+        ),
+        'slack_notification_if_fixed' => array(
+            'label' => 'Senden einer Notification wenn die Fehler behoben wurden',
+            'displayCond' => [
+                'AND' => [
+                    'FIELD:slack_notification:REQ:true',
+                    'FIELD:slack_notification_interval_type:=:1',
+                ],
+            ],
+            'config' => array(
+                'type' => 'check',
+                'default' => 0
+            ),
+        ),
     ),
     'types' => array(
         '0' => array(
@@ -278,7 +319,7 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = array(
                 --div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.description, description, 
                 --div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.relations, groups, tests, 
                 --div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.contacts, contacts, ' .
-                ($advancedNotificationsEnabled ? '--div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.notifications, notification_strategies, slack_notification, slack_notification_channel, ' : '') .
+                ($advancedNotificationsEnabled ? '--div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.notifications, notification_strategies, slack_notification, slack_notification_channel, slack_notification_interval_type, slack_notification_interval, slack_notification_if_fixed,' : '') .
                 '--div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.testconfigurations, ' .
                 ($enableNewConfigurationOverrides ? 'configuration_overrides, ' : 'testconfigurations,') .
                 '--div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance.tab.access, hidden, starttime, endtime, fe_group',
