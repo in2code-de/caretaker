@@ -1,6 +1,7 @@
 <?php
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 $GLOBALS['TCA']['tx_caretaker_node_address_mm'] = [
     'ctrl' => [
         'hideTable' => 1,
@@ -9,9 +10,6 @@ $GLOBALS['TCA']['tx_caretaker_node_address_mm'] = [
         'label_alt_force' => 1,
         'iconfile' => 'EXT:caretaker/Resources/Public/Icons/nodeaddressrelation.png',
         'rootLevel' => -1,
-    ],
-    'interface' => [
-        'showRecordFieldList' => '',
     ],
     'columns' => [
         'uid_address' => [
@@ -37,7 +35,7 @@ $GLOBALS['TCA']['tx_caretaker_node_address_mm'] = [
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_caretaker_roles',
                 'items' => [
-                    ['', 0],
+                    ['label' => '', 'value' => 0],
                 ],
             ],
         ],

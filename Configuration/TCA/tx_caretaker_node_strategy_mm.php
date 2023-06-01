@@ -2,6 +2,7 @@
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+
 $extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
 $advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabled'] == '1';
 
@@ -11,9 +12,6 @@ if ($advancedNotificationsEnabled) {
             'hideTable' => 1,
             'label' => 'uid_strategy',
             'iconfile' => 'EXT:caretaker/Resources/Public/Icons/nodeaddressrelation.png',
-        ],
-        'interface' => [
-            'showRecordFieldList' => '',
         ],
         'columns' => [
             'uid_strategy' => [

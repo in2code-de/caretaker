@@ -6,7 +6,6 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = [
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'sortby' => 'sorting',
         'delete' => 'deleted',
         'rootLevel' => -1,
@@ -20,9 +19,6 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = [
         'iconfile' => 'EXT:caretaker/Resources/Public/Icons/group.png',
         'searchFields' => 'title, description',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'hidden,tests,name',
-    ],
     'columns' => [
         'hidden' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
@@ -34,27 +30,23 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = [
         'starttime' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
-                'type' => 'input',
+                'type' => 'datetime',
                 'size' => '8',
-                'eval' => 'date',
                 'default' => '0',
                 'checkbox' => '0',
-                'renderType' => 'inputDateTime',
             ],
         ],
         'endtime' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
-                'type' => 'input',
+                'type' => 'datetime',
                 'size' => '8',
-                'eval' => 'date',
                 'checkbox' => '0',
                 'default' => '0',
                 'range' => [
                     'upper' => mktime(0, 0, 0, 12, 31, 2020),
                     'lower' => mktime(0, 0, 0, date('m') - 1, date('d'), date('Y')),
                 ],
-                'renderType' => 'inputDateTime',
             ],
         ],
         'fe_group' => [
@@ -63,10 +55,19 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['', 0],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', -1],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', -2],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'],
+                    ['label' => '', 'value' => 0],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        'value' => -1
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        'value' => -2
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        'value' => '--div--'
+                    ],
                 ],
                 'foreign_table' => 'fe_groups',
             ],

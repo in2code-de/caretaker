@@ -1,6 +1,7 @@
 <?php
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 // add API-Key to fe_user record
 ExtensionManagementUtility::addTCAcolumns(
     'fe_users',

@@ -19,7 +19,6 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = [
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY title',
         'delete' => 'deleted',
         'rootLevel' => -1,
@@ -32,9 +31,6 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = [
         'iconfile' => 'EXT:caretaker/Resources/Public/Icons/instance.png',
         'searchFields' => 'title, description, url, host',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'hidden,instancegroup,testgroups,tests,request_mode,encryption_mode,encryption_key,project_namename,project_manager,domain,additional_domains,contacts,server_type,server_provider,server_customer_id,server_other,cms_url,cms_admin,cms_pwd,cms_install_pwd,accesses,other,request_url,contacts',
-    ],
     'columns' => [
         'hidden' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
@@ -46,27 +42,23 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = [
         'starttime' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
-                'type' => 'input',
+                'type' => 'datetime',
                 'size' => '8',
-                'eval' => 'date',
                 'default' => '0',
-                'checkbox' => '0',
-                'renderType' => 'inputDateTime',
+                'checkbox' => '0'
             ],
         ],
         'endtime' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
-                'type' => 'input',
+                'type' => 'datetime',
                 'size' => '8',
-                'eval' => 'date',
                 'checkbox' => '0',
                 'default' => '0',
                 'range' => [
                     'upper' => mktime(0, 0, 0, 12, 31, 2020),
                     'lower' => mktime(0, 0, 0, date('m') - 1, date('d'), date('Y')),
                 ],
-                'renderType' => 'inputDateTime',
             ],
         ],
         'fe_group' => [
@@ -75,9 +67,18 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'items' => [
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', -1],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', -2],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        'value' => -1
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        'value' => -2
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        'value' => '--div--'
+                    ],
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
@@ -184,7 +185,7 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = [
                 'minitems' => 0,
                 'maxitems' => 1,
                 'items' => [
-                    ['', '0'],
+                    ['label' => '', 'value' => '0'],
                 ],
             ],
         ],

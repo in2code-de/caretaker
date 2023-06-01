@@ -3,6 +3,7 @@
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 $extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
 $advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabled'] == '1';
 

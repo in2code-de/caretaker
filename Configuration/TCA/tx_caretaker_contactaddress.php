@@ -6,7 +6,6 @@ $GLOBALS['TCA']['tx_caretaker_contactaddress'] = [
         'label' => 'name',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY name',
         'delete' => 'deleted',
         'rootLevel' => -1,
@@ -14,9 +13,6 @@ $GLOBALS['TCA']['tx_caretaker_contactaddress'] = [
             'disabled' => 'hidden',
         ],
         'iconfile' => 'EXT:caretaker/Resources/Public/Icons/contactaddress.png',
-    ],
-    'interface' => [
-        'showRecordFieldList' => 'hidden,name,email,xmpp',
     ],
     'columns' => [
         'hidden' => [

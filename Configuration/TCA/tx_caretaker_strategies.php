@@ -2,6 +2,7 @@
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+
 $extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
 $advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabled'] == '1';
 
@@ -12,7 +13,6 @@ if ($advancedNotificationsEnabled) {
             'label' => 'name',
             'tstamp' => 'tstamp',
             'crdate' => 'crdate',
-            'cruser_id' => 'cruser_id',
             'default_sortby' => 'ORDER BY name',
             'delete' => 'deleted',
             'rootLevel' => -1,
@@ -21,9 +21,6 @@ if ($advancedNotificationsEnabled) {
             ],
             'iconfile' => 'EXT:caretaker/Resources/Public/Icons/strategy.png',
             'searchFields' => 'name, description',
-        ],
-        'interface' => [
-            'showRecordFieldList' => 'hidden,id,name',
         ],
         'columns' => [
             'hidden' => [

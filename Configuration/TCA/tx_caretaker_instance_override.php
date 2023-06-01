@@ -10,7 +10,6 @@ $GLOBALS['TCA']['tx_caretaker_instance_override'] = [
         'hideTable' => true,
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'rootLevel' => -1,
         'delete' => 'deleted',
         'enablecolumns' => [
@@ -28,12 +27,12 @@ $GLOBALS['TCA']['tx_caretaker_instance_override'] = [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance_override.type.test_configuration',
-                        'test_configuration',
+                        'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance_override.type.test_configuration',
+                        'value' => 'test_configuration',
                     ],
                     [
-                        'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance_override.type.curl_option',
-                        'curl_option',
+                        'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance_override.type.curl_option',
+                        'value' => 'curl_option',
                     ],
                 ],
                 'default' => 'test_configuration',
@@ -71,13 +70,13 @@ $GLOBALS['TCA']['tx_caretaker_instance_override'] = [
                 'size' => '1',
                 'max' => '1',
                 'items' => [
-                    ['', ''],
-                    ['CURLOPT_SSL_VERIFYPEER', 'CURLOPT_SSL_VERIFYPEER'],
-                    ['CURLOPT_SSL_VERIFYHOST', 'CURLOPT_SSL_VERIFYHOST'],
-                    ['CURLOPT_TIMEOUT_MS', 'CURLOPT_TIMEOUT_MS'],
-                    ['CURLOPT_INTERFACE', 'CURLOPT_INTERFACE'],
-                    ['CURLOPT_USERPWD (user:password)', 'CURLOPT_USERPWD'],
-                    ['CURLOPT_HTTPAUTH', 'CURLOPT_HTTPAUTH'],
+                    ['label' => '', 'value' => ''],
+                    ['label' => 'CURLOPT_SSL_VERIFYPEER', 'value' => 'CURLOPT_SSL_VERIFYPEER'],
+                    ['label' => 'CURLOPT_SSL_VERIFYHOST', 'value' => 'CURLOPT_SSL_VERIFYHOST'],
+                    ['label' => 'CURLOPT_TIMEOUT_MS', 'value' => 'CURLOPT_TIMEOUT_MS'],
+                    ['label' => 'CURLOPT_INTERFACE', 'value' => 'CURLOPT_INTERFACE'],
+                    ['label' => 'CURLOPT_USERPWD (user:password)', 'value' => 'CURLOPT_USERPWD'],
+                    ['label' => 'CURLOPT_HTTPAUTH', 'value' => 'CURLOPT_HTTPAUTH'],
                 ],
                 'renderType' => 'selectSingle',
             ],
@@ -86,8 +85,7 @@ $GLOBALS['TCA']['tx_caretaker_instance_override'] = [
         'curl_value_int' => [
             'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance_override.curl_value',
             'config' => [
-                'type' => 'input',
-                'eval' => 'trim,int',
+                'type' => 'number',
             ],
             'displayCond' => 'FIELD:curl_option:=:CURLOPT_TIMEOUT_MS',
         ],
@@ -105,8 +103,14 @@ $GLOBALS['TCA']['tx_caretaker_instance_override'] = [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance_override.curl_value.true', 'true'],
-                    ['LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance_override.curl_value.false', 'false'],
+                    [
+                        'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance_override.curl_value.true',
+                        'value' => 'true'
+                    ],
+                    [
+                        'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_instance_override.curl_value.false',
+                        'value' => 'false'
+                    ],
                 ],
             ],
             'displayCond' => [
@@ -122,12 +126,12 @@ $GLOBALS['TCA']['tx_caretaker_instance_override'] = [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['CURLAUTH_ANY', CURLAUTH_ANY],
-                    ['CURLAUTH_ANYSAFE', CURLAUTH_ANYSAFE],
-                    ['CURLAUTH_BASIC', CURLAUTH_BASIC],
-                    ['CURLAUTH_DIGEST', CURLAUTH_DIGEST],
-                    ['CURLAUTH_GSSNEGOTIATE', CURLAUTH_GSSNEGOTIATE],
-                    ['CURLAUTH_NTLM', CURLAUTH_NTLM],
+                    ['label' => 'CURLAUTH_ANY', 'value' => CURLAUTH_ANY],
+                    ['label' => 'CURLAUTH_ANYSAFE', 'value' => CURLAUTH_ANYSAFE],
+                    ['label' => 'CURLAUTH_BASIC', 'value' => CURLAUTH_BASIC],
+                    ['label' => 'CURLAUTH_DIGEST', 'value' => CURLAUTH_DIGEST],
+                    ['label' => 'CURLAUTH_GSSNEGOTIATE', 'value' => CURLAUTH_GSSNEGOTIATE],
+                    ['label' => 'CURLAUTH_NTLM', 'value' => CURLAUTH_NTLM],
                 ],
             ],
             'displayCond' => 'FIELD:curl_option:=:CURLOPT_HTTPAUTH',

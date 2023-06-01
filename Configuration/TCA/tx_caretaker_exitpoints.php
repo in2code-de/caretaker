@@ -13,7 +13,6 @@ if ($advancedNotificationsEnabled) {
             'label' => 'name',
             'tstamp' => 'tstamp',
             'crdate' => 'crdate',
-            'cruser_id' => 'cruser_id',
             'default_sortby' => 'ORDER BY name',
             'delete' => 'deleted',
             'rootLevel' => -1,
@@ -22,9 +21,6 @@ if ($advancedNotificationsEnabled) {
             ],
             'iconfile' => 'EXT:caretaker/Resources/Public/Icons/exitpoint.png',
             'searchFields' => 'name, description',
-        ],
-        'interface' => [
-            'showRecordFieldList' => 'hidden,id,name,description,service,config',
         ],
         'columns' => [
             'hidden' => [
@@ -65,10 +61,13 @@ if ($advancedNotificationsEnabled) {
                     'renderType' => 'selectSingle',
                     'items' => array_merge(
                         [
-                            0 => ['LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_exitpoints.service.select_exitpoint', ''],
+                            0 => [
+                                'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_exitpoints.service.select_exitpoint',
+                                'value' => ''
+                            ],
                         ],
-                        // TODO: Implement this helper
-                        // \tx_caretaker_ServiceHelper::getTcaExitPointServiceItems()
+                    // TODO: Implement this helper
+                    // \tx_caretaker_ServiceHelper::getTcaExitPointServiceItems()
                     ),
                     'size' => 1,
                     'maxitems' => 1,
