@@ -6,27 +6,27 @@ $extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('c
 $advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabled'] == '1';
 
 if ($advancedNotificationsEnabled) {
-    $GLOBALS['TCA']['tx_caretaker_node_strategy_mm'] = array(
-        'ctrl' => array(
+    $GLOBALS['TCA']['tx_caretaker_node_strategy_mm'] = [
+        'ctrl' => [
             'hideTable' => 1,
             'label' => 'uid_strategy',
             'iconfile' => 'EXT:caretaker/Resources/Public/Icons/nodeaddressrelation.png',
-        ),
-        'interface' => array(
+        ],
+        'interface' => [
             'showRecordFieldList' => '',
-        ),
-        'columns' => array(
-            'uid_strategy' => array(
+        ],
+        'columns' => [
+            'uid_strategy' => [
                 'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_strategies',
-                'config' => array(
+                'config' => [
                     'type' => 'select',
                     'renderType' => 'selectSingle',
                     'foreign_table' => 'tx_caretaker_strategies',
-                ),
-            ),
-        ),
-        'types' => array(
-            '0' => array('showitem' => 'uid_strategy, --palette--;;1'),
-        ),
-    );
+                ],
+            ],
+        ],
+        'types' => [
+            '0' => ['showitem' => 'uid_strategy, --palette--;;1'],
+        ],
+    ];
 }

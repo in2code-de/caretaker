@@ -1,7 +1,7 @@
 <?php
 
-$GLOBALS['TCA']['tx_caretaker_testgroup'] = array(
-    'ctrl' => array(
+$GLOBALS['TCA']['tx_caretaker_testgroup'] = [
+    'ctrl' => [
         'title' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_testgroup',
         'label' => 'title',
         'tstamp' => 'tstamp',
@@ -11,104 +11,104 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = array(
         'delete' => 'deleted',
         'rootLevel' => -1,
         'treeParentField' => 'parent_group',
-        'enablecolumns' => array(
+        'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
-        ),
+        ],
         'iconfile' => 'EXT:caretaker/Resources/Public/Icons/group.png',
         'searchFields' => 'title, description',
-    ),
-    'interface' => array(
+    ],
+    'interface' => [
         'showRecordFieldList' => 'hidden,tests,name',
-    ),
-    'columns' => array(
-        'hidden' => array(
+    ],
+    'columns' => [
+        'hidden' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
-            'config' => array(
+            'config' => [
                 'type' => 'check',
                 'default' => '0',
-            ),
-        ),
-        'starttime' => array(
+            ],
+        ],
+        'starttime' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => '8',
                 'eval' => 'date',
                 'default' => '0',
                 'checkbox' => '0',
                 'renderType' => 'inputDateTime',
-            ),
-        ),
-        'endtime' => array(
+            ],
+        ],
+        'endtime' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => '8',
                 'eval' => 'date',
                 'checkbox' => '0',
                 'default' => '0',
-                'range' => array(
+                'range' => [
                     'upper' => mktime(0, 0, 0, 12, 31, 2020),
                     'lower' => mktime(0, 0, 0, date('m') - 1, date('d'), date('Y')),
-                ),
+                ],
                 'renderType' => 'inputDateTime',
-            ),
-        ),
-        'fe_group' => array(
+            ],
+        ],
+        'fe_group' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => array(
-                    array('', 0),
-                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', -1),
-                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', -2),
-                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'),
-                ),
+                'items' => [
+                    ['', 0],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', -1],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', -2],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'],
+                ],
                 'foreign_table' => 'fe_groups',
-            ),
-        ),
-        'title' => array(
+            ],
+        ],
+        'title' => [
             'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_testgroup.title',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'trim',
-            ),
-        ),
-        'description' => array(
+            ],
+        ],
+        'description' => [
             'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_testgroup.description',
-            'config' => array(
+            'config' => [
                 'type' => 'text',
                 'cols' => '50',
                 'rows' => '5',
                 'enableRichtext' => true,
-            ),
-        ),
-        'parent_group' => array(
+            ],
+        ],
+        'parent_group' => [
             'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_testgroup.parent_group',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
                 'renderMode' => 'tree', // for old versions
                 'renderType' => 'selectTree', // for 7.4 and higher
-                'treeConfig' => array(
+                'treeConfig' => [
                     'parentField' => 'parent_group',
-                    'appearance' => array(
+                    'appearance' => [
                         'showHeader' => true,
-                    ),
-                ),
+                    ],
+                ],
                 'foreign_table' => 'tx_caretaker_testgroup',
                 'foreign_table_where' => 'ORDER BY tx_caretaker_testgroup.sorting ASC',
                 'minitems' => 0,
                 'maxitems' => 1,
-            ),
-        ),
-        'instances' => array(
+            ],
+        ],
+        'instances' => [
             'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_testgroup.instances',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'foreign_table' => 'tx_caretaker_instance',
@@ -118,11 +118,11 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = array(
                 'autoSizeMax' => 25,
                 'minitems' => 0,
                 'maxitems' => 10000,
-            ),
-        ),
-        'tests' => array(
+            ],
+        ],
+        'tests' => [
             'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_testgroup.tests',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'foreign_table' => 'tx_caretaker_test',
@@ -133,23 +133,23 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = array(
                 'autoSizeMax' => 25,
                 'minitems' => 0,
                 'maxitems' => 10000,
-                'fieldControl' => array(
-                    'addRecord' => array(
+                'fieldControl' => [
+                    'addRecord' => [
                         'pid' => '###CURRENT_PID###',
                         'table' => 'tx_caretaker_test',
                         'title' => 'Create new Test',
                         'setValue' => 'prepend',
-                    ),
-                    'editPopup' => array(
+                    ],
+                    'editPopup' => [
                         'title' => 'Edit Test',
                         'windowOpenParameters' => 'height=350,width=580,status=0,menubar=0,scrollbars=1',
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'types' => array(
-        '0' => array(
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => [
             'showitem' => '
                 hidden, 
                 --palette--;;1, 
@@ -158,10 +158,10 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = array(
                 --div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_testgroup.tab.description,description,
 		        --div--;LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_testgroup.tab.relations,tests
 		    ',
-        ),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => 'starttime,endtime,fe_group'),
-        'instances' => array('showitem' => 'instances', 'isHiddenPalette' => true),
-    ),
-);
+        ],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => 'starttime,endtime,fe_group'],
+        'instances' => ['showitem' => 'instances', 'isHiddenPalette' => true],
+    ],
+];

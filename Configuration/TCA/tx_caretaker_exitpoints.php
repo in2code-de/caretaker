@@ -7,8 +7,8 @@ if (isset($extConfig['notifications.'])) {
 }
 
 if ($advancedNotificationsEnabled) {
-    $GLOBALS['TCA']['tx_caretaker_exitpoints'] = array(
-        'ctrl' => array(
+    $GLOBALS['TCA']['tx_caretaker_exitpoints'] = [
+        'ctrl' => [
             'title' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_exitpoints',
             'label' => 'name',
             'tstamp' => 'tstamp',
@@ -17,80 +17,80 @@ if ($advancedNotificationsEnabled) {
             'default_sortby' => 'ORDER BY name',
             'delete' => 'deleted',
             'rootLevel' => -1,
-            'enablecolumns' => array(
+            'enablecolumns' => [
                 'disabled' => 'hidden',
-            ),
+            ],
             'iconfile' => 'EXT:caretaker/Resources/Public/Icons/exitpoint.png',
             'searchFields' => 'name, description',
-        ),
-        'interface' => array(
+        ],
+        'interface' => [
             'showRecordFieldList' => 'hidden,id,name,description,service,config',
-        ),
-        'columns' => array(
-            'hidden' => array(
+        ],
+        'columns' => [
+            'hidden' => [
                 'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
-                'config' => array(
+                'config' => [
                     'type' => 'check',
                     'default' => '0',
-                ),
-            ),
-            'id' => array(
+                ],
+            ],
+            'id' => [
                 'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_exitpoints.id',
-                'config' => array(
+                'config' => [
                     'type' => 'input',
                     'size' => 30,
                     'eval' => 'nospace,unique',
                     'required' => true,
-                ),
-            ),
-            'name' => array(
+                ],
+            ],
+            'name' => [
                 'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_exitpoints.name',
-                'config' => array(
+                'config' => [
                     'type' => 'input',
                     'size' => '255',
-                ),
-            ),
-            'description' => array(
+                ],
+            ],
+            'description' => [
                 'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_exitpoints.description',
-                'config' => array(
+                'config' => [
                     'type' => 'text',
                     'cols' => '50',
                     'rows' => '5',
-                ),
-            ),
-            'service' => array(
+                ],
+            ],
+            'service' => [
                 'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_exitpoints.service',
-                'config' => array(
+                'config' => [
                     'type' => 'select',
                     'renderType' => 'selectSingle',
                     'items' => array_merge(
-                        array(
-                            0 => array('LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_exitpoints.service.select_exitpoint', ''),
-                        ),
+                        [
+                            0 => ['LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_exitpoints.service.select_exitpoint', ''],
+                        ],
                         // TODO: Implement this helper
                         // \tx_caretaker_ServiceHelper::getTcaExitPointServiceItems()
                     ),
                     'size' => 1,
                     'maxitems' => 1,
-                ),
+                ],
                 'onChange' => 'reload',
-            ),
-            'config' => array(
+            ],
+            'config' => [
                 'displayCond' => 'FIELD:service:REQ:true',
                 'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_exitpoints.config',
-                'config' => array(
+                'config' => [
                     'type' => 'flex',
                     'ds_pointerField' => 'service',
                     // TODO: Implement this helper
                     // 'ds' => \tx_caretaker_ServiceHelper::getTcaExitPointConfigDs(),
-                ),
-            ),
-        ),
-        'types' => array(
-            '0' => array('showitem' => 'id, name, description, service, config'),
-        ),
-        'palettes' => array(
-            '1' => array('showitem' => 'hidden'),
-        ),
-    );
+                ],
+            ],
+        ],
+        'types' => [
+            '0' => ['showitem' => 'id, name, description, service, config'],
+        ],
+        'palettes' => [
+            '1' => ['showitem' => 'hidden'],
+        ],
+    ];
 }

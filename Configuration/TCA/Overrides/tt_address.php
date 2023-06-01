@@ -9,16 +9,16 @@ $advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabl
 if ($advancedNotificationsEnabled && ExtensionManagementUtility::isLoaded('tt_address')) {
     ExtensionManagementUtility::addTCAcolumns(
         'tt_address',
-        array(
-            'tx_caretaker_xmpp' => array(
+        [
+            'tx_caretaker_xmpp' => [
                 'exclude' => 0,
                 'label' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tt_address.tx_caretaker_xmpp',
-                'config' => array(
+                'config' => [
                     'type' => 'input',
                     'size' => '30',
-                ),
-            ),
-        )
+                ],
+            ],
+        ]
     );
     ExtensionManagementUtility::addToAllTCAtypes('tt_address', 'tx_caretaker_xmpp;;;;1-1-1');
 }
