@@ -14,27 +14,7 @@
   "autoload": {
     "psr-4": {
       "Caretaker\\Caretaker\\": "Classes/"
-    },
-    "classmap": [
-      "Classes",
-      "interfaces",
-      "scheduler",
-      "pi_abstract",
-      "pi_base",
-      "pi_graphreport",
-      "pi_overview",
-      "pi_singleview"
-    ]
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Caretaker\\Caretaker\\Tests\\": "Tests",
-      "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/",
-      "TYPO3\\CMS\\Fluid\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/fluid/Tests/"
     }
-  },
-  "replace": {
-    "typo3-ter/caretaker": "self.version"
   },
   "config": {
     "vendor-dir": ".Build/vendor",
