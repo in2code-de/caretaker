@@ -29,7 +29,7 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = array(
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ),
-        'iconfile' => 'EXT:caretaker/res/icons/instance.png',
+        'iconfile' => 'EXT:caretaker/Resources/Public/Icons/instance.png',
         'searchFields' => 'title, description, url, host',
     ),
     'interface' => array(

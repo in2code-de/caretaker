@@ -19,7 +19,7 @@ if ($advancedNotificationsEnabled) {
             'enablecolumns' => array(
                 'disabled' => 'hidden',
             ),
-            'iconfile' => 'EXT:caretaker/res/icons/strategy.png',
+            'iconfile' => 'EXT:caretaker/Resources/Public/Icons/strategy.png',
             'searchFields' => 'name, description',
         ),
         'interface' => array(

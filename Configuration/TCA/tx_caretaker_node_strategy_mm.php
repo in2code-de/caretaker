@@ -10,7 +10,7 @@ if ($advancedNotificationsEnabled) {
         'ctrl' => array(
             'hideTable' => 1,
             'label' => 'uid_strategy',
-            'iconfile' => 'EXT:caretaker/res/icons/nodeaddressrelation.png',
+            'iconfile' => 'EXT:caretaker/Resources/Public/Icons/nodeaddressrelation.png',
         ),
         'interface' => array(
             'showRecordFieldList' => '',

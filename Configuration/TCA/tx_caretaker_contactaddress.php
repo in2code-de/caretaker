@@ -13,7 +13,7 @@ $GLOBALS['TCA']['tx_caretaker_contactaddress'] = array(
         'enablecolumns' => array(
             'disabled' => 'hidden',
         ),
-        'iconfile' => 'EXT:caretaker/res/icons/contactaddress.png',
+        'iconfile' => 'EXT:caretaker/Resources/Public/Icons/contactaddress.png',
     ),
     'interface' => array(
         'showRecordFieldList' => 'hidden,name,email,xmpp',

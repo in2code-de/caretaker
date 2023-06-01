@@ -20,7 +20,7 @@ if ($advancedNotificationsEnabled) {
             'enablecolumns' => array(
                 'disabled' => 'hidden',
             ),
-            'iconfile' => 'EXT:caretaker/res/icons/exitpoint.png',
+            'iconfile' => 'EXT:caretaker/Resources/Public/Icons/exitpoint.png',
             'searchFields' => 'name, description',
         ),
         'interface' => array(

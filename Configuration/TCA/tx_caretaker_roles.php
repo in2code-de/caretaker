@@ -13,7 +13,7 @@ $GLOBALS['TCA']['tx_caretaker_roles'] = array(
         'enablecolumns' => array(
             'disabled' => 'hidden',
         ),
-        'iconfile' => 'EXT:caretaker/res/icons/role.png',
+        'iconfile' => 'EXT:caretaker/Resources/Public/Icons/role.png',
         'searchFields' => 'name, description',
     ),
     'interface' => array(
