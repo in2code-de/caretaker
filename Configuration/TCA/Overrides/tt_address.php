@@ -1,10 +1,13 @@
 <?php
 
-$extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['caretaker']);
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+$extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
 $advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabled'] == '1';
 
-if ($advancedNotificationsEnabled && \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('tt_address')) {
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+if ($advancedNotificationsEnabled && ExtensionManagementUtility::isLoaded('tt_address')) {
+    ExtensionManagementUtility::addTCAcolumns(
         'tt_address',
         array(
             'tx_caretaker_xmpp' => array(
@@ -17,5 +20,5 @@ if ($advancedNotificationsEnabled && \TYPO3\CMS\Core\Utility\ExtensionManagement
             ),
         )
     );
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_address', 'tx_caretaker_xmpp;;;;1-1-1');
+    ExtensionManagementUtility::addToAllTCAtypes('tt_address', 'tx_caretaker_xmpp;;;;1-1-1');
 }

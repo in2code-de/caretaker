@@ -1,6 +1,8 @@
 <?php
 
-$extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['caretaker']);
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+$extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
 $advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabled'] == '1';
 
 $GLOBALS['TCA']['tx_caretaker_instancegroup'] = array(
@@ -21,7 +23,6 @@ $GLOBALS['TCA']['tx_caretaker_instancegroup'] = array(
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ),
-        'dividers2tabs' => 1,
         'iconfile' => 'EXT:caretaker/res/icons/instancegroup.png',
         'searchFields' => 'title, description',
     ),
@@ -30,14 +31,14 @@ $GLOBALS['TCA']['tx_caretaker_instancegroup'] = array(
     ),
     'columns' => array(
         'hidden' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => array(
                 'type' => 'check',
                 'default' => '0',
             ),
         ),
         'starttime' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => array(
                 'type' => 'input',
                 'size' => '8',
@@ -48,7 +49,7 @@ $GLOBALS['TCA']['tx_caretaker_instancegroup'] = array(
             ),
         ),
         'endtime' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => array(
                 'type' => 'input',
                 'size' => '8',
@@ -63,14 +64,14 @@ $GLOBALS['TCA']['tx_caretaker_instancegroup'] = array(
             ),
         ),
         'fe_group' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
             'config' => array(
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'items' => array(
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.usergroups', '--div--'),
+                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', -1),
+                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', -2),
+                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'),
                 ),
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
@@ -84,7 +85,8 @@ $GLOBALS['TCA']['tx_caretaker_instancegroup'] = array(
             'config' => array(
                 'type' => 'input',
                 'size' => '30',
-                'eval' => 'trim,required',
+                'eval' => 'trim',
+                'required' => true,
             ),
         ),
         'description' => array(

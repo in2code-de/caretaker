@@ -21,7 +21,7 @@ $GLOBALS['TCA']['tx_caretaker_roles'] = array(
     ),
     'columns' => array(
         'hidden' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => array(
                 'type' => 'check',
                 'default' => '0',

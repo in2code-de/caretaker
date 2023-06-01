@@ -1,7 +1,8 @@
 <?php
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 // add API-Key to fe_user record
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+ExtensionManagementUtility::addTCAcolumns(
     'fe_users',
     array(
         'tx_caretaker_api_key' => array(
@@ -13,4 +14,4 @@
         ),
     )
 );
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users', 'tx_caretaker_api_key');
+ExtensionManagementUtility::addToAllTCAtypes('fe_users', 'tx_caretaker_api_key');

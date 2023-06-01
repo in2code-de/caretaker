@@ -1,8 +1,11 @@
 <?php
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use Caretaker\Caretaker\UserFunc\SlackChannelsUserFunc;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
-$extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['caretaker']);
+$extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
 $advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabled'] == '1';
 $enableNewConfigurationOverrides = $extConfig['features.']['newConfigurationOverrides.']['enabled'] == '1';
 if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) >= VersionNumberUtility::convertVersionNumberToInteger('7.5.0')) {
@@ -26,7 +29,6 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = array(
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ),
-        'dividers2tabs' => 1,
         'iconfile' => 'EXT:caretaker/res/icons/instance.png',
         'searchFields' => 'title, description, url, host',
     ),
@@ -35,14 +37,14 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = array(
     ),
     'columns' => array(
         'hidden' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => array(
                 'type' => 'check',
                 'default' => '0',
             ),
         ),
         'starttime' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => array(
                 'type' => 'input',
                 'size' => '8',
@@ -53,7 +55,7 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = array(
             ),
         ),
         'endtime' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => array(
                 'type' => 'input',
                 'size' => '8',
@@ -68,14 +70,14 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = array(
             ),
         ),
         'fe_group' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
             'config' => array(
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'items' => array(
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.usergroups', '--div--'),
+                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', -1),
+                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', -2),
+                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'),
                 ),
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
@@ -262,8 +264,7 @@ $GLOBALS['TCA']['tx_caretaker_instance'] = array(
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'maxitems' => 1,
-                'enableMultiSelectFilterTextfield' => true,
-                'itemsProcFunc' => Caretaker\Caretaker\UserFunc\SlackChannelsUserFunc::class . '->getChannels'
+                'itemsProcFunc' => SlackChannelsUserFunc::class . '->getChannels'
             ),
         ),
     ),

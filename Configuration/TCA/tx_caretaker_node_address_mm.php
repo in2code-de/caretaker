@@ -1,5 +1,6 @@
 <?php
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 $GLOBALS['TCA']['tx_caretaker_node_address_mm'] = array(
     'ctrl' => array(
         'hideTable' => 1,
@@ -18,11 +19,11 @@ $GLOBALS['TCA']['tx_caretaker_node_address_mm'] = array(
             'config' => array(
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'foreign_table' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('tt_address') ? 'tt_address' : 'tx_caretaker_contactaddress',
+                'foreign_table' => ExtensionManagementUtility::isLoaded('tt_address') ? 'tt_address' : 'tx_caretaker_contactaddress',
                 'fieldControl' => array(
                     'addRecord' => array(
                         'pid' => '0',
-                        'table' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('tt_address') ? 'tt_address' : 'tx_caretaker_contactaddress',
+                        'table' => ExtensionManagementUtility::isLoaded('tt_address') ? 'tt_address' : 'tx_caretaker_contactaddress',
                         'title' => 'Create new address',
                         'setValue' => 'prepend',
                     ),

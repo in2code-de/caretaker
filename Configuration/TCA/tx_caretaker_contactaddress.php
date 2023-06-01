@@ -13,7 +13,6 @@ $GLOBALS['TCA']['tx_caretaker_contactaddress'] = array(
         'enablecolumns' => array(
             'disabled' => 'hidden',
         ),
-        'dividers2tabs' => 1,
         'iconfile' => 'EXT:caretaker/res/icons/contactaddress.png',
     ),
     'interface' => array(
@@ -21,7 +20,7 @@ $GLOBALS['TCA']['tx_caretaker_contactaddress'] = array(
     ),
     'columns' => array(
         'hidden' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => array(
                 'type' => 'check',
                 'default' => '0',

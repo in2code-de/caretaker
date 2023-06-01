@@ -17,7 +17,6 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = array(
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ),
-        'dividers2tabs' => 1,
         'iconfile' => 'EXT:caretaker/res/icons/group.png',
         'searchFields' => 'title, description',
     ),
@@ -26,14 +25,14 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = array(
     ),
     'columns' => array(
         'hidden' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => array(
                 'type' => 'check',
                 'default' => '0',
             ),
         ),
         'starttime' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => array(
                 'type' => 'input',
                 'size' => '8',
@@ -44,7 +43,7 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = array(
             ),
         ),
         'endtime' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => array(
                 'type' => 'input',
                 'size' => '8',
@@ -59,15 +58,15 @@ $GLOBALS['TCA']['tx_caretaker_testgroup'] = array(
             ),
         ),
         'fe_group' => array(
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
             'config' => array(
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => array(
                     array('', 0),
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
-                    array('LLL:EXT:lang/locallang_general.xml:LGL.usergroups', '--div--'),
+                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', -1),
+                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', -2),
+                    array('LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'),
                 ),
                 'foreign_table' => 'fe_groups',
             ),

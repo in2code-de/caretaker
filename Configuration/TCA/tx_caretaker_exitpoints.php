@@ -28,7 +28,7 @@ if ($advancedNotificationsEnabled) {
         ),
         'columns' => array(
             'hidden' => array(
-                'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
+                'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
                 'config' => array(
                     'type' => 'check',
                     'default' => '0',
@@ -39,7 +39,8 @@ if ($advancedNotificationsEnabled) {
                 'config' => array(
                     'type' => 'input',
                     'size' => 30,
-                    'eval' => 'required,nospace,unique',
+                    'eval' => 'nospace,unique',
+                    'required' => true,
                 ),
             ),
             'name' => array(
