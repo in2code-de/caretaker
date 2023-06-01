@@ -4,15 +4,8 @@
   "type": "typo3-cms-extension",
   "homepage": "https://github.com/TYPO3-Caretaker/",
   "license": "GPL-2.0",
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:in2code-de/caretaker_instance.git"
-    }
-  ],
   "require": {
-    "typo3/cms-core": "^12.1",
-    "caretaker/caretaker_instance": "dev-feature/V12",
+    "typo3/cms-core": "^12.4",
     "guzzlehttp/guzzle": "^7.5"
   },
   "require-dev": {
