@@ -1,7 +1,10 @@
 <?php
 
-$extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['caretaker']);
-$advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabled'] == '1';
+$extConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['caretaker'] ?? [];
+$advancedNotificationsEnabled = false;
+if (isset($extConfig['notifications.'])) {
+    $advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabled'] == '1' ?? false;
+}
 
 if ($advancedNotificationsEnabled) {
     $GLOBALS['TCA']['tx_caretaker_exitpoints'] = array(
@@ -63,7 +66,8 @@ if ($advancedNotificationsEnabled) {
                         array(
                             0 => array('LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_exitpoints.service.select_exitpoint', ''),
                         ),
-                        \tx_caretaker_ServiceHelper::getTcaExitPointServiceItems()
+                        // TODO: Implement this helper
+                        // \tx_caretaker_ServiceHelper::getTcaExitPointServiceItems()
                     ),
                     'size' => 1,
                     'maxitems' => 1,
@@ -76,7 +80,8 @@ if ($advancedNotificationsEnabled) {
                 'config' => array(
                     'type' => 'flex',
                     'ds_pointerField' => 'service',
-                    'ds' => \tx_caretaker_ServiceHelper::getTcaExitPointConfigDs(),
+                    // TODO: Implement this helper
+                    // 'ds' => \tx_caretaker_ServiceHelper::getTcaExitPointConfigDs(),
                 ),
             ),
         ),

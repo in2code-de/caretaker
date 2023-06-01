@@ -195,7 +195,8 @@ $GLOBALS['TCA']['tx_caretaker_test'] = array(
                     array(
                         0 => array('LLL:EXT:caretaker/Resources/Private/Language/locallang_db.xlf:tx_caretaker_test.test_service.select_service', ''),
                     ),
-                    \tx_caretaker_ServiceHelper::getTcaTestServiceItems()
+                    // TODO: Implement this helper
+                    // \tx_caretaker_ServiceHelper::getTcaTestServiceItems()
                 ),
                 'size' => 1,
                 'maxitems' => 1,
@@ -208,7 +209,8 @@ $GLOBALS['TCA']['tx_caretaker_test'] = array(
             'config' => array(
                 'type' => 'flex',
                 'ds_pointerField' => 'test_service',
-                'ds' => \tx_caretaker_ServiceHelper::getTcaTestConfigDs(),
+                // TODO: Implement this helper
+                // 'ds' => \tx_caretaker_ServiceHelper::getTcaTestConfigDs(),
             ),
         ),
         'test_retry' => array(

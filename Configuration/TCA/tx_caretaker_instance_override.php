@@ -59,7 +59,8 @@ $GLOBALS['TCA']['tx_caretaker_instance_override'] = array(
             'config' => array(
                 'type' => 'flex',
                 'ds_pointerField' => 'test',
-                'ds' => \tx_caretaker_ServiceHelper::getTcaTestConfigDsWithIds(),
+                // TODO: Implement this helper
+                // 'ds' => \tx_caretaker_ServiceHelper::getTcaTestConfigDsWithIds(),
             ),
             'displayCond' => 'FIELD:test:REQ:true',
         ),
