@@ -42,11 +42,6 @@ use Caretaker\Caretaker\Entity\Result\TestResult;
 interface TestServiceInterface
 {
     /**
-     * Initialize the Service
-     */
-    public function init();
-
-    /**
      * Set the instance for the test execution
      *
      * @param InstanceNode $instance

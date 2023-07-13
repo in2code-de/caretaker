@@ -28,6 +28,7 @@ namespace Caretaker\Caretaker\Service\Test;
 
 use Caretaker\Caretaker\Entity\Node\InstanceNode;
 use Caretaker\Caretaker\Entity\Result\TestResult;
+use Caretaker\Caretaker\Helper\LocalizationHelper;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -51,7 +52,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Tobias Liebig <liebig@networkteam.com>
  *
  */
-class TestServiceBase extends \TYPO3\CMS\Core\Service\AbstractService implements TestServiceInterface
+class TestServiceBase implements TestServiceInterface
 {
     /**
      * The instance the test is run for
@@ -156,7 +157,7 @@ class TestServiceBase extends \TYPO3\CMS\Core\Service\AbstractService implements
      */
     public function getTypeDescription()
     {
-        return tx_caretaker_LocalizationHelper::localizeString($this->typeDescription);
+        return LocalizationHelper::localizeString($this->typeDescription);
     }
 
     /**

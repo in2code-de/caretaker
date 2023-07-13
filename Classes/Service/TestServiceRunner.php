@@ -56,7 +56,7 @@ use TestResultRepository;
  * @author Tobias Liebig <liebig@networkteam.com>
  *
  */
-class TestServiceRunner extends \TYPO3\CMS\Core\Service\AbstractService
+class TestServiceRunner
 {
     /**
      * Run a test service for the given test node
