@@ -4,7 +4,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
 $extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
-$advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabled'] == '1';
+$advancedNotificationsEnabled = $extConfig['notifications']['advanced']['enabled'] == '1';
 
 if ($advancedNotificationsEnabled) {
     $GLOBALS['TCA']['tx_caretaker_node_strategy_mm'] = [

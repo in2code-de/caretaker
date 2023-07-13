@@ -6,8 +6,8 @@ use Caretaker\Caretaker\UserFunc\SlackChannelsUserFunc;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 $extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
-$advancedNotificationsEnabled = $extConfig['notifications.']['advanced.']['enabled'] == '1';
-$enableNewConfigurationOverrides = $extConfig['features.']['newConfigurationOverrides.']['enabled'] == '1';
+$advancedNotificationsEnabled = $extConfig['notifications']['advanced']['enabled'] == '1';
+$enableNewConfigurationOverrides = $extConfig['features']['newConfigurationOverrides']['enabled'] == '1';
 if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) >= VersionNumberUtility::convertVersionNumberToInteger('7.5.0')) {
     // enable new configurations overrides automatically with 7.5 and later
     $enableNewConfigurationOverrides = true;
