@@ -1,6 +1,6 @@
 <?php
 
-namespace Caretaker\Caretaker\services\Slack;
+namespace Caretaker\Caretaker\Service\Slack;
 
 class Client
 {

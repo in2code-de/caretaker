@@ -2,7 +2,7 @@
 
 namespace Caretaker\Caretaker\UserFunc;
 
-use Caretaker\Caretaker\Services\Slack\Client;
+use Caretaker\Caretaker\Service\Slack\Client;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
