@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Caretaker\Caretaker\Command\RunTestCommand:
+    tags:
+      - name: console.command
+        command: 'caretaker:runtest'
+        description: 'This command runs tests for a given node id.'
