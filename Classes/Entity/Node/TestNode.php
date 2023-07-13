@@ -7,6 +7,8 @@ use Caretaker\Caretaker\Entity\Result\NodeResult;
 use Caretaker\Caretaker\Entity\Result\ResultMessage;
 use Caretaker\Caretaker\Entity\Result\TestResult;
 use Caretaker\Caretaker\Entity\Result\TestResultRange;
+use Caretaker\Caretaker\Service\Test\TestServiceInterface;
+use Caretaker\Caretaker\Service\TestServiceRunner;
 use Exception;
 use TestResultRepository;
 
@@ -75,7 +77,7 @@ class TestNode extends AbstractNode
     /**
      * Reference to the test service
      *
-     * @var tx_caretaker_TestServiceInterface
+     * @var TestServiceInterface
      */
     protected $testService = null;
 
@@ -115,7 +117,7 @@ class TestNode extends AbstractNode
     protected $stopHour = false;
 
     /**
-     * @var tx_caretaker_TestServiceRunner
+     * @var TestServiceRunner
      */
     protected $testServiceRunner = null;
 
@@ -165,7 +167,7 @@ class TestNode extends AbstractNode
 
     /**
      * @throws Exception
-     * @return tx_caretaker_TestServiceInterface
+     * @return TestServiceInterface
      */
     public function getTestService()
     {
@@ -375,7 +377,7 @@ class TestNode extends AbstractNode
     }
 
     /**
-     * @return tx_caretaker_TestServiceRunner
+     * @return TestServiceRunner
      */
     protected function getTestServiceRunner()
     {
@@ -383,7 +385,7 @@ class TestNode extends AbstractNode
             if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['caretaker']['TestServiceRunner'])) {
                 $testServiceRunnerClassName = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['caretaker']['TestServiceRunner'];
             } else {
-                $testServiceRunnerClassName = 'tx_caretaker_TestServiceRunner';
+                $testServiceRunnerClassName = 'TestServiceRunner';
             }
             $this->testServiceRunner = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($testServiceRunnerClassName);
         }
@@ -392,7 +394,7 @@ class TestNode extends AbstractNode
     }
 
     /**
-     * @param tx_caretaker_TestServiceRunner $testServiceRunner
+     * @param TestServiceRunner $testServiceRunner
      * @return void
      */
     public function setTestServiceRunner($testServiceRunner)

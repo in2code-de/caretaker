@@ -1,0 +1,99 @@
+<?php
+
+namespace Caretaker\Caretaker\Service\Test;
+
+use Caretaker\Caretaker\Constants;
+use Caretaker\Caretaker\Entity\Result\TestResult;
+
+/***************************************************************
+ * Copyright notice
+ *
+ * (c) 2009-2011 by n@work GmbH and networkteam GmbH
+ *
+ * All rights reserved
+ *
+ * This script is part of the Caretaker project. The Caretaker project
+ * is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * The GNU General Public License can be found at
+ * http://www.gnu.org/copyleft/gpl.html.
+ *
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+/**
+ * This is a file of the caretaker project.
+ * http://forge.typo3.org/projects/show/extension-caretaker
+ *
+ * Project sponsored by:
+ * n@work GmbH - http://www.work.de
+ * networkteam GmbH - http://www.networkteam.com/
+ *
+ * $Id$
+ */
+
+/**
+ * Testservice for creating a timestamp by "touching" a file (e.g. for checking that caretaker
+ * is executed properly). This test will only create a file that can be checked
+ * by other infrastructure monitoring systems.
+ *
+ * @author Martin Ficzel <martin@work.de>
+ * @author Thomas Hempel <thomas@work.de>
+ * @author Christopher Hlubek <hlubek@networkteam.com>
+ * @author Tobias Liebig <liebig@networkteam.com>
+ *
+ */
+class TouchTestService extends TestServiceBase
+{
+    /**
+     * Value Description
+     *
+     * @var string
+     */
+    protected $valueDescription = '';
+
+    /**
+     * Service type description in human readable form.
+     *
+     * @var string
+     */
+    protected $typeDescription = 'LLL:EXT:caretaker/Resources/Private/Language/locallang.xlf:touch_service_description';
+
+    /**
+     * Template to display the test Configuration in human readable form.
+     *
+     * @var string
+     */
+    protected $configurationInfoTemplate = 'LLL:EXT:caretaker/Resources/Private/Language/locallang.xlf:touch_service_configuration';
+
+    /**
+     * @return TestResult
+     */
+    public function runTest()
+    {
+        $filename = $this->getTimestampFilename();
+        $time = time();
+        if (file_put_contents($filename, $time) !== false) {
+            return TestResult::create(Constants::state_ok);
+        }
+        return TestResult::create(Constants::state_error, 0, 'Could not touch file ' . $filename);
+    }
+
+    /**
+     * The configured filename for the timestamp
+     *
+     * @return string
+     */
+    protected function getTimestampFilename()
+    {
+        return $this->getConfigValue('timestamp_filename');
+    }
+}

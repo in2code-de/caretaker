@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+
+<!--
+/**
+ * This is a file of the caretaker project.
+ * Copyright 2008 by n@work Internet Informationssystem GmbH (www.work.de)
+ *
+ * @Author	Thomas Hempel 		<thomas@work.de>
+ * @Author	Martin Ficzel		<martin@work.de>
+ * @Author	Patrick Kollodzik	<patrick@work.de>
+ *
+ * $$Id$$
+ */
+-->
+
+<T3DataStructure>
+    <ROOT>
+        <type>array</type>
+        <el>
+            <xmlTitle>
+                <TCEforms>
+                    <label>The Title:</label>
+                    <config>
+                        <type>input</type>
+                    </config>
+                </TCEforms>
+            </xmlTitle>
+        </el>
+    </ROOT>
+</T3DataStructure>
