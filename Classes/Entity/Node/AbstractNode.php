@@ -2,9 +2,11 @@
 
 namespace Caretaker\Caretaker\Entity\Node;
 
+use Caretaker\Caretaker\Entity\Contact\ContactRole;
 use Caretaker\Caretaker\Entity\Result\NodeResult;
 use Caretaker\Caretaker\Entity\Result\NodeResultRange;
 use Caretaker\Caretaker\Entity\Result\TestResult;
+use Caretaker\Caretaker\Repository\ContactRepository;
 use TestResultRepository;
 
 /***************************************************************
@@ -402,14 +404,14 @@ abstract class AbstractNode
     /**
      * Get the contacts for the node
      *
-     * @param string|tx_caretaker_ContactRole|array<tx_caretaker_ContactRole> $roles
+     * @param string|ContactRole|array<ContactRole> $roles
      * @return array
      */
     public function getContacts($roles = null)
     {
-        $contactRepository = tx_caretaker_ContactRepository::getInstance();
+        $contactRepository = ContactRepository::getInstance();
 
-        if ($roles instanceof tx_caretaker_ContactRole) {
+        if ($roles instanceof ContactRole) {
             $roles = array($roles);
         } elseif (is_string($roles)) {
             $roleIds = $roles;
@@ -420,10 +422,10 @@ abstract class AbstractNode
                     break;
                 }
                 $role = $contactRepository->getContactRoleById($roleId);
-                if (!$role instanceof tx_caretaker_ContactRole) {
+                if (!$role instanceof ContactRole) {
                     $role = $contactRepository->getContactRoleByUid(intval($roleId));
                 }
-                if ($role instanceof tx_caretaker_ContactRole) {
+                if ($role instanceof ContactRole) {
                     $roles[] = $role;
                 }
             }
@@ -436,7 +438,7 @@ abstract class AbstractNode
             }
             $contacts = $this->contacts['__all__'];
         } else {
-            /** @var tx_caretaker_ContactRole $role */
+            /** @var ContactRole $role */
             foreach ($roles as $role) {
                 if ($this->contacts[$role->getId()] === null) {
                     $this->contacts[$role->getId()] = $contactRepository->getContactsByNodeAndRole($this, $role);
