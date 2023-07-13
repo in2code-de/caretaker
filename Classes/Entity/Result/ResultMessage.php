@@ -2,6 +2,8 @@
 
 namespace Caretaker\Caretaker\Entity\Result;
 
+use Caretaker\Caretaker\Helper\LocalizationHelper;
+
 /***************************************************************
  * Copyright notice
  *
@@ -105,7 +107,7 @@ class ResultMessage
         $result = $this->text;
 
         // check for LLL strings
-        $result = tx_caretaker_LocalizationHelper::localizeString($result);
+        $result = LocalizationHelper::localizeString($result);
 
         // insert Values
         foreach ($this->values as $key => $value) {

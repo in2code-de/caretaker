@@ -3,6 +3,7 @@
 namespace Caretaker\Caretaker\Entity\Result;
 
 use Caretaker\Caretaker\Constants;
+use Caretaker\Caretaker\Helper\LocalizationHelper;
 
 /***************************************************************
  * Copyright notice
@@ -205,7 +206,7 @@ abstract class NodeResult
      */
     public function getLocallizedStateInfo()
     {
-        return tx_caretaker_LocalizationHelper::localizeString('LLL:EXT:caretaker/Resources/Private/Language/locallang.xlf:state_' . strtolower($this->getStateInfo()));
+        return LocalizationHelper::localizeString('LLL:EXT:caretaker/Resources/Private/Language/locallang.xlf:state_' . strtolower($this->getStateInfo()));
     }
 
     /**
