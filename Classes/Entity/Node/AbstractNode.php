@@ -7,7 +7,7 @@ use Caretaker\Caretaker\Entity\Result\NodeResult;
 use Caretaker\Caretaker\Entity\Result\NodeResultRange;
 use Caretaker\Caretaker\Entity\Result\TestResult;
 use Caretaker\Caretaker\Repository\ContactRepository;
-use TestResultRepository;
+use Caretaker\Caretaker\Repository\TestResultRepository;
 
 /***************************************************************
  * Copyright notice

@@ -7,7 +7,7 @@ use Caretaker\Caretaker\Entity\Node\AggregatorNode;
 use Caretaker\Caretaker\Entity\Result\AggregatorResult;
 use Caretaker\Caretaker\Entity\Result\AggregatorResultRange;
 use Caretaker\Caretaker\Entity\Result\ResultMessage;
-use TestResultRepository;
+use Caretaker\Caretaker\Repository\TestResultRepository;
 
 /***************************************************************
  * Copyright notice

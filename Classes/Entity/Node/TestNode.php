@@ -10,7 +10,7 @@ use Caretaker\Caretaker\Entity\Result\TestResultRange;
 use Caretaker\Caretaker\Service\Test\TestServiceInterface;
 use Caretaker\Caretaker\Service\TestServiceRunner;
 use Exception;
-use TestResultRepository;
+use Caretaker\Caretaker\Repository\TestResultRepository;
 
 /***************************************************************
  * Copyright notice

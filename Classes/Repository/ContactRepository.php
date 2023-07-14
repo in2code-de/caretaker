@@ -6,7 +6,7 @@ use Caretaker\Caretaker\Constants;
 use Caretaker\Caretaker\Entity\Contact\Contact;
 use Caretaker\Caretaker\Entity\Contact\ContactRole;
 use Caretaker\Caretaker\Entity\Node\AbstractNode;
-use TestResultRepository;
+use Caretaker\Caretaker\Repository\TestResultRepository;
 
 /***************************************************************
  * Copyright notice

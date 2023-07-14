@@ -9,7 +9,7 @@ use Caretaker\Caretaker\Entity\Result\ResultMessage;
 use Caretaker\Caretaker\Entity\Result\TestResult;
 use Caretaker\Caretaker\Service\Test\TestServiceInterface;
 use Exception;
-use TestResultRepository;
+use Caretaker\Caretaker\Repository\TestResultRepository;
 
 /***************************************************************
  * Copyright notice

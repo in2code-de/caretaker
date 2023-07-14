@@ -1,4 +1,7 @@
 <?php
+
+namespace Caretaker\Caretaker\Repository;
+
 /***************************************************************
  * Copyright notice
  *
