@@ -192,7 +192,7 @@ class AdvancedNotificationService extends AbstractNotificationService
         $exitpoint = false;
         list($exitpointRecord) = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             '*',
-            Constants::table_Exitponts,
+            Constants::table_Exitpoints,
             'id = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($identifier, '') . ' AND deleted=0 AND hidden=0',
             '',
             '',

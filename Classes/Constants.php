@@ -74,7 +74,7 @@ class Constants
     const table_Lasttestresults = 'tx_caretaker_lasttestresult';
     const table_Aggregatorresults = 'tx_caretaker_aggregatorresult';
     const table_Roles = 'tx_caretaker_roles';
-    const table_Exitponts = 'tx_caretaker_exitpoints';
+    const table_Exitpoints = 'tx_caretaker_exitpoints';
     const table_Strategies = 'tx_caretaker_strategies';
 
     /* relation tables */
