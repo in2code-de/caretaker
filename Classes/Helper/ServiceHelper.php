@@ -179,15 +179,11 @@ class ServiceHelper
         $dsArray = array(
             'default' => self::$tcaTestConfigDs['default'],
         );
-        if (version_compare(GeneralUtility::makeInstance(Typo3Version::class)->getVersion(), '8.0', '<') && isset($GLOBALS['TYPO3_DB'])) {
-            $tests = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'tx_caretaker_test', 'deleted=0');
-        } else {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_test');
-            try {
-                $tests = $queryBuilder->select('*')
-                    ->from('tx_caretaker_test')->where($queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter('0')))->executeQuery();
-            } catch (Exception $exception) {
-            }
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_test');
+        try {
+            $tests = $queryBuilder->select('*')
+                ->from('tx_caretaker_test')->where($queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter('0')))->executeQuery();
+        } catch (Exception $exception) {
         }
         if (!empty($tests)) {
             foreach ($tests as $testRecord) {

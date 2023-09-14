@@ -289,21 +289,13 @@ class TestServiceBase implements TestServiceInterface
                 $LANG = GeneralUtility::makeInstance(LanguageService::class);
                 $LANG->init($language_key);
 
-                if (version_compare(GeneralUtility::makeInstance(Typo3Version::class)->getVersion(), '8.0', '<')) {
-                    $localLanguage = GeneralUtility::readLLfile(
-                        GeneralUtility::getFileAbsFileName($locallang_file),
-                        $LANG->lang,
-                        $LANG->charSet
-                    );
-                } else {
-                    /** @var $languageFactory LocalizationFactory */
-                    $languageFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
-                    $localLanguage = $languageFactory->getParsedData(
-                        GeneralUtility::getFileAbsFileName($locallang_file),
-                        $LANG->lang,
-                        $LANG->charSet
-                    );
-                }
+                /** @var $languageFactory LocalizationFactory */
+                $languageFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
+                $localLanguage = $languageFactory->getParsedData(
+                    GeneralUtility::getFileAbsFileName($locallang_file),
+                    $LANG->lang,
+                    $LANG->charSet
+                );
 
                 return $LANG->getLLL(
                     $locallang_key,
