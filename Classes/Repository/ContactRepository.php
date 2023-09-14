@@ -2,12 +2,13 @@
 
 namespace Caretaker\Caretaker\Repository;
 
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use Caretaker\Caretaker\Constants;
 use Caretaker\Caretaker\Entity\Contact\Contact;
 use Caretaker\Caretaker\Entity\Contact\ContactRole;
 use Caretaker\Caretaker\Entity\Node\AbstractNode;
-use Caretaker\Caretaker\Repository\TestResultRepository;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /***************************************************************
  * Copyright notice
@@ -93,11 +94,17 @@ class ContactRepository
      */
     public function getContactRoleByUid($uid)
     {
-        $rolesRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', Constants::table_Roles, 'uid = ' . intval($uid) . ' AND hidden=0 AND deleted=0');
-        if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($rolesRes)) {
-            return $this->dbrow2contact_role($row);
-        }
-        return false;
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::table_Roles);
+        $rolesRes = $queryBuilder
+            ->select('*')
+            ->from(Constants::table_Roles)
+            ->where(
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
+            )
+            ->executeQuery()
+            ->fetchAssociative();
+
+        return ($rolesRes === false) ? false : $this->dbrow2contact_role($rolesRes);
     }
 
     /**
@@ -108,11 +115,17 @@ class ContactRepository
      */
     public function getContactRoleById($id)
     {
-        $rolesRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', Constants::table_Roles, 'id = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($id, Constants::table_Roles) . ' AND hidden=0 AND deleted=0');
-        if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($rolesRes)) {
-            return $this->dbrow2contact_role($row);
-        }
-        return false;
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::table_Roles);
+        $rolesRes = $queryBuilder
+            ->select('*')
+            ->from(Constants::table_Roles)
+            ->where(
+                $queryBuilder->expr()->eq('id', $queryBuilder->createNamedParameter($id))
+            )
+            ->executeQuery()
+            ->fetchAssociative();
+
+        return ($rolesRes === false) ? false : $this->dbrow2contact_role($rolesRes);
     }
 
     /**
@@ -145,8 +158,16 @@ class ContactRepository
         }
 
         $storageTable = $node->getStorageTable();
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', Constants::relationTable_Node2Address, 'uid_node=' . $node->getUid() . ' AND node_table=\'' . $storageTable . '\'');
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::relationTable_Node2Address);
+        $res = $queryBuilder
+            ->select('*')
+            ->from(Constants::relationTable_Node2Address)
+            ->where(
+                $queryBuilder->expr()->eq('uid_node', $queryBuilder->createNamedParameter($node->getUid(), \PDO::PARAM_INT)),
+                $queryBuilder->expr()->eq('node_table', $queryBuilder->createNamedParameter($storageTable))
+            )
+            ->executeQuery();
+        while ($row = $res->fetchAssociative()) {
             if ($contact = $this->dbrow2contact($row)) {
                 $contacts[] = $contact;
             }
@@ -173,8 +194,17 @@ class ContactRepository
         }
 
         $storageTable = $node->getStorageTable();
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', Constants::relationTable_Node2Address, 'uid_node=' . $node->getUid() . ' AND node_table=\'' . $storageTable . '\'' . ' AND role=' . $role->getUid());
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Constants::relationTable_Node2Address);
+        $res = $queryBuilder
+            ->select('*')
+            ->from(Constants::relationTable_Node2Address)
+            ->where(
+                $queryBuilder->expr()->eq('uid_node', $queryBuilder->createNamedParameter($node->getUid(), \PDO::PARAM_INT)),
+                $queryBuilder->expr()->eq('node_table', $queryBuilder->createNamedParameter($storageTable)),
+                $queryBuilder->expr()->eq('role', $queryBuilder->createNamedParameter($role->getUid(), \PDO::PARAM_INT))
+            )
+            ->executeQuery();
+        while ($row = $res->fetchAssociative()) {
             if ($contact = $this->dbrow2contact($row)) {
                 $contacts[] = $contact;
             }
@@ -197,8 +227,16 @@ class ContactRepository
             if (ExtensionManagementUtility::isLoaded('tt_address')) {
                 $table = Constants::table_TTAddressAddresses;
             }
-            $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'uid=' . $row['uid_address'] . ' AND hidden=0 AND deleted=0', '', '', 1);
-            $address_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+            $address_row = $queryBuilder
+                ->select('*')
+                ->from($table)
+                ->where(
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($row['uid_address'], \PDO::PARAM_INT))
+                )
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchAssociative();
             if ($address_row) {
                 $address = $address_row;
             } else {
