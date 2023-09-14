@@ -2,6 +2,8 @@
 
 namespace Caretaker\Caretaker\Service\Slack;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 class Client
 {
     const BASE_URL = 'https://slack.com/api/';
@@ -29,7 +31,7 @@ class Client
 
     /**
      * @param array $options
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function postMessage($options)
     {
@@ -37,7 +39,7 @@ class Client
     }
 
     /**
-     * @return \Psr\Http\Message\StreamInterface
+     * @return StreamInterface
      */
     public function getChannels()
     {
@@ -47,7 +49,7 @@ class Client
     /**
      * @param string $method
      * @param array $options
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     protected function sendRequest($method, $options = null)
     {

@@ -2,6 +2,9 @@
 
 namespace Caretaker\Caretaker\Service\Notification;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use Caretaker\Caretaker\Entity\Node\AbstractNode;
 use Caretaker\Caretaker\Entity\Result\TestResult;
 
@@ -60,7 +63,7 @@ class AbstractNotificationService implements NotificationServiceInterface
 
     public function __construct($serviceKey = '')
     {
-        $this->extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['caretaker']);
+        $this->extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
         $this->setId($serviceKey);
     }
 
@@ -138,7 +141,7 @@ class AbstractNotificationService implements NotificationServiceInterface
         $enabled = (bool)$this->getConfigValue('enabled');
         $beUsername = $GLOBALS['BE_USER']->user['username'];
 
-        return $enabled === true && TYPO3_MODE == 'BE' && (defined('TYPO3_cliMode') && ($beUsername == '_cli_caretaker' || $beUsername == '_cli_scheduler') || !empty($GLOBALS['SOBE']) && $GLOBALS['SOBE']->MCONF['name'] == 'system_txschedulerM1');
+        return $enabled === true && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() && (defined('TYPO3_cliMode') && ($beUsername == '_cli_caretaker' || $beUsername == '_cli_scheduler') || !empty($GLOBALS['SOBE']) && $GLOBALS['SOBE']->MCONF['name'] == 'system_txschedulerM1');
     }
 
     /**

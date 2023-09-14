@@ -2,6 +2,10 @@
 
 namespace Caretaker\Caretaker\Service\Notification;
 
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use Caretaker\Caretaker\Constants;
 use Caretaker\Caretaker\Entity\Node\AbstractNode;
 use Caretaker\Caretaker\Entity\Node\TestNode;
@@ -132,7 +136,7 @@ class AdvancedNotificationService extends AbstractNotificationService
     protected function processStrategy($strategy, $config, $notification)
     {
         $conditions = $this->defaultConditions;
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($conditions, is_array($config['conditions.']) ? $config['conditions.'] : array());
+        ArrayUtility::mergeRecursiveWithOverrule($conditions, is_array($config['conditions.']) ? $config['conditions.'] : array());
         if (count($config['rules.']) === 0 || !$this->doConditionsApply($conditions, $notification)) {
             return;
         }
@@ -197,10 +201,10 @@ class AdvancedNotificationService extends AbstractNotificationService
         if ($exitpointRecord === null) {
             return false;
         }
-        $info = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::findService('caretaker_exitpoint', $exitpointRecord['service']);
+        $info = ExtensionManagementUtility::findService('caretaker_exitpoint', $exitpointRecord['service']);
         if (is_array($info) && !empty($info['className'])) {
-            $exitpoint = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($info['className']);
-            $config = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($exitpointRecord['config']);
+            $exitpoint = GeneralUtility::makeInstance($info['className']);
+            $config = GeneralUtility::xml2array($exitpointRecord['config']);
             if (!is_array($config)) {
                 $config = array();
             }
@@ -287,10 +291,10 @@ class AdvancedNotificationService extends AbstractNotificationService
                     break;
 
                 case 'stateChanges':
-                    $allowedChanges = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configValue);
+                    $allowedChanges = GeneralUtility::trimExplode(',', $configValue);
                     $conditionApply = false;
                     foreach ($allowedChanges as $allowedChange) {
-                        list($from, $to) = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('>', $allowedChange);
+                        list($from, $to) = GeneralUtility::trimExplode('>', $allowedChange);
                         if ($this->matchConditionValue($to, $result->getStateInfo())
                             && $this->matchConditionValue($from, $lastResult->getStateInfo())
                         ) {
@@ -340,7 +344,7 @@ class AdvancedNotificationService extends AbstractNotificationService
                         'result' => $result,
                         'lastResult' => $lastResult,
                     );
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($configValue, $parameters, $this);
+                    GeneralUtility::callUserFunction($configValue, $parameters, $this);
             }
             if (!$conditionApply) {
                 return false;
@@ -367,7 +371,7 @@ class AdvancedNotificationService extends AbstractNotificationService
 
         // schedule = 8-18
         if (!empty($schedule) && strpos($schedule, '-') !== false) {
-            list($start, $stop) = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode('-', $schedule, false, 2);
+            list($start, $stop) = GeneralUtility::intExplode('-', $schedule, false, 2);
         }
         // schedule.start = 8
         // schedule.end = 18
@@ -380,7 +384,7 @@ class AdvancedNotificationService extends AbstractNotificationService
 
         // schedule.monday = 8-18
         if (!empty($scheduleSub[$weekdays[$currentDayOfWeek]]) && strpos($scheduleSub[$weekdays[$currentDayOfWeek]], '-') !== false) {
-            list($start, $stop) = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode('-', $scheduleSub[$weekdays[$currentDayOfWeek]], false, 2);
+            list($start, $stop) = GeneralUtility::intExplode('-', $scheduleSub[$weekdays[$currentDayOfWeek]], false, 2);
         }
 
         // schedule.monday.start = 8
@@ -409,7 +413,7 @@ class AdvancedNotificationService extends AbstractNotificationService
     protected function matchConditionValue($references, $value)
     {
         $value = strtoupper($value);
-        foreach (\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $references) as $reference) {
+        foreach (GeneralUtility::trimExplode(',', $references) as $reference) {
             $reference = strtoupper($reference);
             if ($reference === '*' || $reference === 'ALL') {
                 return true;
@@ -431,8 +435,8 @@ class AdvancedNotificationService extends AbstractNotificationService
     protected function getStrategyConfig($strategy)
     {
         if ($this->strategyConfig[$strategy['uid']] === null) {
-            $parseObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser');
-            $config = \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::checkIncludeLines($strategy['config']);
+            $parseObj = GeneralUtility::makeInstance(TypoScriptParser::class);
+            $config = TypoScriptParser::checkIncludeLines($strategy['config']);
             $parseObj->parse($config);
             $config = $parseObj->setup;
             $this->strategyConfig[$strategy['uid']] = $config;

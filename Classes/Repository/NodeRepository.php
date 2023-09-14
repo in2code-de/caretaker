@@ -25,7 +25,9 @@ namespace Caretaker\Caretaker\Repository;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use Caretaker\Caretaker\Entity\Node\InstancegroupNode;
 use Caretaker\Caretaker\Entity\Node\InstanceNode;
 use Caretaker\Caretaker\Entity\Node\TestgroupNode;
@@ -334,7 +336,7 @@ class NodeRepository
     private function dbrow2instancegroup($row, $parent)
     {
         // check access
-        if (TYPO3_MODE == 'FE') {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
             if ($GLOBALS['TSFE']->sys_page) {
                 $result = $GLOBALS['TSFE']->sys_page->checkRecord('tx_caretaker_instancegroup', $row['uid']);
             } else {
@@ -449,7 +451,7 @@ class NodeRepository
     private function dbrow2instance($row, $parent = null)
     {
         // check access
-        if (TYPO3_MODE == 'FE') {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
             if ($GLOBALS['TSFE']->sys_page) {
                 $result = $GLOBALS['TSFE']->sys_page->checkRecord('tx_caretaker_instance', $row['uid']);
             } else {
@@ -474,7 +476,7 @@ class NodeRepository
         if ($row['description']) {
             $instance->setDescription($row['description']);
         }
-        $extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['caretaker']);
+        $extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
         $newConfigurationOverrideEnabled = $extConfig['features.']['newConfigurationOverrides.']['enabled'] == '1';
         if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) >= VersionNumberUtility::convertVersionNumberToInteger('7.5.0')) {
             // enable new configurations overrides automatically with 7.5 and later

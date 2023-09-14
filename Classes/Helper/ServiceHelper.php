@@ -25,7 +25,6 @@ namespace Caretaker\Caretaker\Helper;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
 /**
  * This is a file of the caretaker project.
  * http://forge.typo3.org/projects/show/extension-caretaker
@@ -36,7 +35,6 @@ namespace Caretaker\Caretaker\Helper;
  *
  * $Id$
  */
-
 /**
  * Helper which provides service methods for fast and convenient registration of
  * testServices.
@@ -47,7 +45,8 @@ namespace Caretaker\Caretaker\Helper;
  * @author Tobias Liebig <liebig@networkteam.com>
  *
  */
-
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use Caretaker\Caretaker\Service\Notification\NotificationServiceInterface;
 use Exception;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -120,7 +119,7 @@ class ServiceHelper
     public static function registerCaretakerTestService($extKey, $path, $key, $title, $description = '')
     {
         // load deferred registered test services from EXT:caretaker_instance, if that was loaded before EXT:caretaker
-        if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('caretaker_instance')
+        if (ExtensionManagementUtility::isLoaded('caretaker_instance')
             && class_exists('tx_caretakerinstance_ServiceHelper')
             && count(tx_caretakerinstance_ServiceHelper::$deferredTestServicesToRegister) > 0
         ) {
@@ -133,7 +132,7 @@ class ServiceHelper
 
         if (!$GLOBALS['T3_SERVICES']['caretaker_test_service'][$key]) {
             // Register test service
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+            ExtensionManagementUtility::addService(
                 'caretaker',
                 'caretaker_test_service',
                 $key,
@@ -146,7 +145,7 @@ class ServiceHelper
                     'quality' => 50,
                     'os' => '',
                     'exec' => '',
-                    'classFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extKey) . $path . '/class.' . $key . 'TestService.php',
+                    'classFile' => ExtensionManagementUtility::extPath($extKey) . $path . '/class.' . $key . 'TestService.php',
                     'className' => $key . 'TestService',
                 )
             );
@@ -180,15 +179,13 @@ class ServiceHelper
         $dsArray = array(
             'default' => self::$tcaTestConfigDs['default'],
         );
-        if (version_compare(TYPO3_version, '8.0', '<') && isset($GLOBALS['TYPO3_DB'])) {
+        if (version_compare(GeneralUtility::makeInstance(Typo3Version::class)->getVersion(), '8.0', '<') && isset($GLOBALS['TYPO3_DB'])) {
             $tests = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'tx_caretaker_test', 'deleted=0');
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_test');
             try {
                 $tests = $queryBuilder->select('*')
-                    ->from('tx_caretaker_test')
-                    ->where($queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter('0')))
-                    ->execute();
+                    ->from('tx_caretaker_test')->where($queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter('0')))->executeQuery();
             } catch (Exception $exception) {
             }
         }
@@ -282,7 +279,7 @@ class ServiceHelper
     {
         self::$notificationServiceInstances = array();
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['caretaker']['notificationServices'] as $serviceKey => $notificationService) {
-            $instance = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['caretaker']['notificationServices'][$serviceKey]);
+            $instance = GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['caretaker']['notificationServices'][$serviceKey]);
             if ($instance instanceof NotificationServiceInterface && $instance->isEnabled()) {
                 self::$notificationServiceInstances[$serviceKey] = $instance;
             }
@@ -300,7 +297,7 @@ class ServiceHelper
     {
         if (!$GLOBALS['T3_SERVICES']['caretaker_exitpoint'][$key]) {
             // Register test service
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+            ExtensionManagementUtility::addService(
                 'caretaker',
                 'caretaker_exitpoint',
                 $key,
@@ -313,7 +310,7 @@ class ServiceHelper
                     'quality' => 50,
                     'os' => '',
                     'exec' => '',
-                    'classFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extKey) . $path . '/class.' . $key . 'ExitPoint.php',
+                    'classFile' => ExtensionManagementUtility::extPath($extKey) . $path . '/class.' . $key . 'ExitPoint.php',
                     'className' => $key . 'ExitPoint',
                 )
             );

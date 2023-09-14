@@ -2,6 +2,9 @@
 
 namespace Caretaker\Caretaker\Entity\Node;
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use Caretaker\Caretaker\Constants;
 use Caretaker\Caretaker\Entity\Result\NodeResult;
 use Caretaker\Caretaker\Entity\Result\ResultMessage;
@@ -173,10 +176,10 @@ class TestNode extends AbstractNode
     {
         if ($this->testService === null) {
             if ($this->testServiceType) {
-                $info = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::findService('caretaker_test_service', $this->testServiceType);
+                $info = ExtensionManagementUtility::findService('caretaker_test_service', $this->testServiceType);
                 if ($info && $info['className']) {
                     if (class_exists($info['className'])) {
-                        $this->testService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($info['className']);
+                        $this->testService = GeneralUtility::makeInstance($info['className']);
                         if ($this->testService) {
                             $this->testService->setInstance($this->getInstance());
                             $this->testService->setConfiguration($this->testServiceConfiguration);
@@ -308,7 +311,7 @@ class TestNode extends AbstractNode
             'realName' => 'unknown',
             'email' => 'unknown',
         );
-        if (TYPO3_MODE == 'BE') {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             $info['username'] = $GLOBALS['BE_USER']->user['username'];
             $info['realName'] = $GLOBALS['BE_USER']->user['realName'];
             $info['email'] = $GLOBALS['BE_USER']->user['email'];
@@ -338,7 +341,7 @@ class TestNode extends AbstractNode
             'realName' => 'unknown',
             'email' => 'unknown',
         );
-        if (TYPO3_MODE == 'BE') {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             $info['username'] = $GLOBALS['BE_USER']->user['username'];
             $info['realName'] = $GLOBALS['BE_USER']->user['realName'];
             $info['email'] = $GLOBALS['BE_USER']->user['email'];
@@ -387,7 +390,7 @@ class TestNode extends AbstractNode
             } else {
                 $testServiceRunnerClassName = 'TestServiceRunner';
             }
-            $this->testServiceRunner = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($testServiceRunnerClassName);
+            $this->testServiceRunner = GeneralUtility::makeInstance($testServiceRunnerClassName);
         }
 
         return $this->testServiceRunner;
@@ -420,7 +423,7 @@ class TestNode extends AbstractNode
      */
     public function getValueDescription()
     {
-        $test_service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService('caretaker_test_service', $this->testServiceType);
+        $test_service = GeneralUtility::makeInstanceService('caretaker_test_service', $this->testServiceType);
         if ($test_service) {
             return $test_service->getValueDescription();
         }

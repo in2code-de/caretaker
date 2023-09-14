@@ -2,6 +2,9 @@
 
 namespace Caretaker\Caretaker\Service\Notification\Exitpoint;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
+use TYPO3\CMS\Core\Mail\MailMessage;
 use Caretaker\Caretaker\Entity\Contact\Contact;
 use Caretaker\Caretaker\Entity\Node\TestNode;
 use Caretaker\Caretaker\Entity\Result\TestResult;
@@ -95,10 +98,7 @@ class NotificationMailExitPoint extends NotificationBaseExitPoint
 
         foreach ($notifications as $notification) {
             if (!$mail['subject']) {
-                $mail['subject'] = $this->cObj->substituteMarkerArray(
-                    $this->config['emailSubject'],
-                    $this->getMarkersForNotification($notification)
-                );
+                $mail['subject'] = GeneralUtility::makeInstance(MarkerBasedTemplateService::class)->substituteMarkerArray($this->config['emailSubject'], $this->getMarkersForNotification($notification));
             }
             $mail['message'] .= $this->getMessageForNotification($notification);
         }
@@ -113,7 +113,7 @@ class NotificationMailExitPoint extends NotificationBaseExitPoint
      */
     protected function sendMail($recipient, $mailContent)
     {
-        $mail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Mail\MailMessage');
+        $mail = GeneralUtility::makeInstance(MailMessage::class);
         $mail->setFrom($this->config['emailSenderAddress'], $this->config['emailSenderName']);
         $mail->setTo($recipient);
         $mail->setSubject($mailContent['subject']);

@@ -2,6 +2,7 @@
 
 namespace Caretaker\Caretaker\Entity\Node;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Caretaker\Caretaker\Entity\Contact\ContactRole;
 use Caretaker\Caretaker\Entity\Result\NodeResult;
 use Caretaker\Caretaker\Entity\Result\NodeResultRange;
@@ -416,7 +417,7 @@ abstract class AbstractNode
         } elseif (is_string($roles)) {
             $roleIds = $roles;
             $roles = array();
-            foreach (\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $roleIds) as $roleId) {
+            foreach (GeneralUtility::trimExplode(',', $roleIds) as $roleId) {
                 if ($roleId === '*') {
                     $roles = null;
                     break;

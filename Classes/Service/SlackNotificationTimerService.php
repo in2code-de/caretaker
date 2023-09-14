@@ -17,11 +17,7 @@ class SlackNotificationTimerService
         $queryBuilder = $this->getQueryBuilder(self::NOTIFICATION_LOG_TABLE);
         return (bool)$queryBuilder
             ->count('uid')
-            ->from(self::NOTIFICATION_LOG_TABLE)
-            ->where(
-                $queryBuilder->expr()->eq('deleted', 0),
-                $queryBuilder->expr()->eq('node_uid', $queryBuilder->createNamedParameter($nodeUid))
-            )->execute()->fetchColumn();
+            ->from(self::NOTIFICATION_LOG_TABLE)->where($queryBuilder->expr()->eq('deleted', 0), $queryBuilder->expr()->eq('node_uid', $queryBuilder->createNamedParameter($nodeUid)))->executeQuery()->fetchColumn();
     }
 
     public function createLog(int $nodeUid, string $resultHash): void
@@ -33,7 +29,7 @@ class SlackNotificationTimerService
             'node_uid' => $nodeUid,
             'result_hash' => $resultHash
         ];
-        $queryBuilder->insert(self::NOTIFICATION_LOG_TABLE)->values($row)->execute();
+        $queryBuilder->insert(self::NOTIFICATION_LOG_TABLE)->values($row)->executeStatement();
     }
 
     public function deleteLog(int $uid): void
@@ -41,9 +37,7 @@ class SlackNotificationTimerService
         $queryBuilder = $this->getQueryBuilder(self::NOTIFICATION_LOG_TABLE);
         $queryBuilder
             ->update(self::NOTIFICATION_LOG_TABLE)
-            ->set('deleted', 1)
-            ->where($queryBuilder->expr()->eq('uid', $uid))
-            ->execute();
+            ->set('deleted', 1)->where($queryBuilder->expr()->eq('uid', $uid))->executeStatement();
     }
 
     public function getActiveLog(int $nodeUid): array
@@ -51,11 +45,7 @@ class SlackNotificationTimerService
         $queryBuilder = $this->getQueryBuilder(self::NOTIFICATION_LOG_TABLE);
         $records = $queryBuilder
             ->select('*')
-            ->from(self::NOTIFICATION_LOG_TABLE)
-            ->where(
-                $queryBuilder->expr()->eq('deleted', 0),
-                $queryBuilder->expr()->eq('node_uid', $queryBuilder->createNamedParameter($nodeUid))
-            )->execute()->fetch();
+            ->from(self::NOTIFICATION_LOG_TABLE)->where($queryBuilder->expr()->eq('deleted', 0), $queryBuilder->expr()->eq('node_uid', $queryBuilder->createNamedParameter($nodeUid)))->executeQuery()->fetch();
 
         return $records;
     }

@@ -2,6 +2,8 @@
 
 namespace Caretaker\Caretaker\Service\Notification;
 
+use TYPO3\CMS\Core\Mail\MailMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Caretaker\Caretaker\Constants;
 use Caretaker\Caretaker\Entity\Contact\Contact;
 use Caretaker\Caretaker\Entity\Node\AbstractNode;
@@ -256,8 +258,8 @@ class SimpleMailNotificationService extends AbstractNotificationService
      */
     private function sendMail($subject, $recipient, $from, $message)
     {
-        /** @var \TYPO3\CMS\Core\Mail\MailMessage $mail */
-        $mail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Mail\MailMessage');
+        /** @var MailMessage $mail */
+        $mail = GeneralUtility::makeInstance(MailMessage::class);
         $mail->setFrom($from);
         $mail->setTo($recipient);
         $mail->setSubject($subject);

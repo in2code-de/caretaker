@@ -2,6 +2,8 @@
 
 namespace Caretaker\Caretaker\Repository;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use Caretaker\Caretaker\Entity\Node\AbstractNode;
 use Caretaker\Caretaker\Entity\Node\AggregatorNode;
 use Caretaker\Caretaker\Entity\Result\AggregatorResult;
@@ -258,8 +260,8 @@ class AggregatorResultRepository
             'result_values' => serialize($aggregator_result->getMessage()->getValues()),
             'result_submessages' => serialize($aggregator_result->getSubMessages()),
         );
-
-        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_caretaker_aggregatorresult', $values);
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_caretaker_aggregatorresult');
+        $connection->insert('tx_caretaker_aggregatorresult', $values);
 
         return $GLOBALS['TYPO3_DB']->sql_insert_id();
     }

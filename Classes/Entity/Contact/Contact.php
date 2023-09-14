@@ -2,6 +2,7 @@
 
 namespace Caretaker\Caretaker\Entity\Contact;
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 /***************************************************************
  * Copyright notice
  *
@@ -25,7 +26,6 @@ namespace Caretaker\Caretaker\Entity\Contact;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
 /**
  * This is a file of the caretaker project.
  * http://forge.typo3.org/projects/show/extension-caretaker
@@ -36,7 +36,6 @@ namespace Caretaker\Caretaker\Entity\Contact;
  *
  * $Id$
  */
-
 /**
  * Contact object (exposing tt_address as an object decorated with a role)
  *
@@ -101,7 +100,7 @@ class Contact
      */
     public function getAddressProperty($propertyName)
     {
-        if ($propertyName == 'xmpp' && \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('tt_address')) {
+        if ($propertyName == 'xmpp' && ExtensionManagementUtility::isLoaded('tt_address')) {
             $propertyName = 'tx_caretaker_xmpp';
         }
         if ($this->address[$propertyName]) {

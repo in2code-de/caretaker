@@ -2,6 +2,8 @@
 
 namespace Caretaker\Caretaker\Helper;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Registry;
 use Exception;
 
 /***************************************************************
@@ -81,8 +83,8 @@ class LatestVersionsHelper
                 $stable[$major] = $details['stable'];
             }
         }
-        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Registry')->set('tx_caretaker', 'TYPO3versions', $max);
-        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Registry')->set('tx_caretaker', 'TYPO3versionsStable', $stable);
+        GeneralUtility::makeInstance(Registry::class)->set('tx_caretaker', 'TYPO3versions', $max);
+        GeneralUtility::makeInstance(Registry::class)->set('tx_caretaker', 'TYPO3versionsStable', $stable);
 
         return true;
     }

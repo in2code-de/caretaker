@@ -2,6 +2,7 @@
 
 namespace Caretaker\Caretaker\Service\Test;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Caretaker\Caretaker\Constants;
 use Caretaker\Caretaker\Entity\Result\ResultMessage;
 use Caretaker\Caretaker\Entity\Result\TestResult;
@@ -477,7 +478,7 @@ class HttpTestService extends TestServiceBase
         $expectedRegex = array();
         $expectedRegexConfiguration = $this->getConfigValue('expected_regex', false, 'sResponse');
         if ($expectedRegexConfiguration) {
-            $expectedRegex = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(chr(10), $expectedRegexConfiguration, true);
+            $expectedRegex = GeneralUtility::trimExplode(chr(10), $expectedRegexConfiguration, true);
         }
 
         return $expectedRegex;

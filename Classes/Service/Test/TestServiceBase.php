@@ -25,7 +25,9 @@ namespace Caretaker\Caretaker\Service\Test;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use Caretaker\Caretaker\Entity\Node\InstanceNode;
 use Caretaker\Caretaker\Entity\Result\TestResult;
 use Caretaker\Caretaker\Helper\LocalizationHelper;
@@ -276,18 +278,18 @@ class TestServiceBase implements TestServiceInterface
 
         switch (TYPO3_MODE) {
             case 'FE':
-                $lcObj = GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
+                $lcObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
-                return $lcObj->TEXT(array('data' => $locallang_string));
+                return $lcObj->cObjGetSingle('TEXT', array('data' => $locallang_string));
 
             case 'BE':
                 $locallang_key = array_pop($locallang_parts);
                 $locallang_file = implode(':', $locallang_parts);
                 $language_key = $GLOBALS['BE_USER']->uc['lang'];
-                $LANG = GeneralUtility::makeInstance('TYPO3\CMS\Lang\LanguageService');
+                $LANG = GeneralUtility::makeInstance(LanguageService::class);
                 $LANG->init($language_key);
 
-                if (version_compare(TYPO3_version, '8.0', '<')) {
+                if (version_compare(GeneralUtility::makeInstance(Typo3Version::class)->getVersion(), '8.0', '<')) {
                     $localLanguage = GeneralUtility::readLLfile(
                         GeneralUtility::getFileAbsFileName($locallang_file),
                         $LANG->lang,

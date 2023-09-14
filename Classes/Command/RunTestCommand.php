@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Caretaker\Caretaker\Command;
 
+use TYPO3\CMS\Core\Locking\LockFactory;
 use Caretaker\Caretaker\Repository\NodeRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -33,7 +34,7 @@ class RunTestCommand extends Command
         }
 
         if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['lockingMode'] != 'disable') {
-            $lockObj = GeneralUtility::makeInstance('TYPO3\CMS\Core\Locking\LockFactory')->createLocker('tx_caretaker_update_' . $node->getCaretakerNodeId());
+            $lockObj = GeneralUtility::makeInstance(LockFactory::class)->createLocker('tx_caretaker_update_' . $node->getCaretakerNodeId());
 
             // TODO: Refactor this when NotificationServices have been implemented
             // no output during scheduler runs

@@ -2,6 +2,8 @@
 
 namespace Caretaker\Caretaker\Service\Test;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use Caretaker\Caretaker\Constants;
 use Caretaker\Caretaker\Entity\Result\ResultMessage;
 use Caretaker\Caretaker\Entity\Result\TestResult;
@@ -133,7 +135,7 @@ class PingTestService extends TestServiceBase
     protected function buildPingCommand()
     {
         $hostname = $this->instance->getHostname();
-        $confArray = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['caretaker']);
+        $confArray = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
         $commandTemplate = $confArray['ping.']['cli_command'];
         $command = str_replace('###', $hostname, $commandTemplate);
 

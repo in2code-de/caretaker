@@ -25,7 +25,9 @@ namespace Caretaker\Caretaker\Entity\Node;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use Caretaker\Caretaker\Constants;
 use Caretaker\Caretaker\Repository\NodeRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -116,7 +118,7 @@ class InstanceNode extends AggregatorNode
         $this->hostname = $hostname;
         $this->publicKey = $publicKey;
         // check if the new configuration overrides are enabled
-        $extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['caretaker']);
+        $extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
         $this->newConfigurationOverrideEnabled = $extConfig['features.']['newConfigurationOverrides.']['enabled'] == '1';
         if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version()) >= VersionNumberUtility::convertVersionNumberToInteger('7.5.0')) {
             // enable new configurations overrides automatically with 7.5 and later
@@ -188,7 +190,7 @@ class InstanceNode extends AggregatorNode
         if ($this->newConfigurationOverrideEnabled) {
             $this->testConfigurationOverlay = $data;
         } else {
-            $this->testConfigurationOverlay = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($data);
+            $this->testConfigurationOverlay = GeneralUtility::xml2array($data);
         }
     }
 
@@ -233,11 +235,8 @@ class InstanceNode extends AggregatorNode
             }
         } else {
             if ($this->testConfigurationOverlay) {
-                $fftools = new \TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools();
-                $options = $fftools->getArrayValueByPath(
-                    'data/sDEF/lDEF/testconfigurations/el',
-                    $this->testConfigurationOverlay
-                );
+                $fftools = new FlexFormTools();
+                $options = ArrayUtility::getValueByPath($this->testConfigurationOverlay, 'data/sDEF/lDEF/testconfigurations/el');
                 if ($options && is_array($options)) {
                     foreach ($options as $key => $el) {
                         if (is_array($el['curl_option'])) {
@@ -300,11 +299,8 @@ class InstanceNode extends AggregatorNode
             }
         } else {
             if ($this->testConfigurationOverlay) {
-                $fftools = new \TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools();
-                $tests = $fftools->getArrayValueByPath(
-                    'data/sDEF/lDEF/testconfigurations/el',
-                    $this->testConfigurationOverlay
-                );
+                $fftools = new FlexFormTools();
+                $tests = ArrayUtility::getValueByPath($this->testConfigurationOverlay, 'data/sDEF/lDEF/testconfigurations/el');
                 if (is_array($tests)) {
                     foreach ($tests as $key => $el) {
                         if ($tests[$key]['test']['el']['test_service']['vDEF'] == $testUid) {

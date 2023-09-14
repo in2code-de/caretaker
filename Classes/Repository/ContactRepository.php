@@ -2,6 +2,7 @@
 
 namespace Caretaker\Caretaker\Repository;
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use Caretaker\Caretaker\Constants;
 use Caretaker\Caretaker\Entity\Contact\Contact;
 use Caretaker\Caretaker\Entity\Contact\ContactRole;
@@ -193,7 +194,7 @@ class ContactRepository
         $address = false;
         if ($row['uid_address']) {
             $table = Constants::table_ContactAddresses;
-            if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('tt_address')) {
+            if (ExtensionManagementUtility::isLoaded('tt_address')) {
                 $table = Constants::table_TTAddressAddresses;
             }
             $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $table, 'uid=' . $row['uid_address'] . ' AND hidden=0 AND deleted=0', '', '', 1);

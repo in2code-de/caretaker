@@ -2,6 +2,10 @@
 
 namespace Caretaker\Caretaker\Service\Notification\Exitpoint;
 
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use Caretaker\Caretaker\Entity\Node\AbstractNode;
 use Caretaker\Caretaker\Entity\Result\TestResult;
 
@@ -62,7 +66,7 @@ Info:
 ';
 
     /**
-     * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
+     * @var ContentObjectRenderer
      */
     protected $cObj;
 
@@ -86,8 +90,8 @@ Info:
             $this->template = $this->config['template'];
         }
 
-        $this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            'TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer'
+        $this->cObj = GeneralUtility::makeInstance(
+            ContentObjectRenderer::class
         );
     }
 
@@ -121,7 +125,7 @@ Info:
         $config = $this->config;
         if (is_array($overrideConfig)) {
             $config = $this->config;
-            \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($config, $overrideConfig);
+            ArrayUtility::mergeRecursiveWithOverrule($config, $overrideConfig);
         }
 
         return $config;
@@ -170,10 +174,7 @@ Info:
      */
     protected function getMessageForNotification($notification)
     {
-        return $this->cObj->substituteMarkerArray(
-            $this->template,
-            $this->getMarkersForNotification($notification)
-        );
+        return GeneralUtility::makeInstance(MarkerBasedTemplateService::class)->substituteMarkerArray($this->template, $this->getMarkersForNotification($notification));
     }
 
     /**

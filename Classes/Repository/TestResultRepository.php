@@ -25,7 +25,6 @@ namespace Caretaker\Caretaker\Repository;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
 /**
  * This is a file of the caretaker project.
  * http://forge.typo3.org/projects/show/extension-caretaker
@@ -36,7 +35,9 @@ namespace Caretaker\Caretaker\Repository;
  *
  * $Id$
  */
-
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use Caretaker\Caretaker\Entity\Result\ResultMessage;
 use Caretaker\Caretaker\Entity\Result\TestResult;
 use Caretaker\Caretaker\Entity\Node\AbstractNode;
@@ -75,7 +76,7 @@ class TestResultRepository
      */
     private function __construct()
     {
-        $confArray = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['caretaker']);
+        $confArray = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
         $this->lastTestResultScanRange = (int)$confArray['lastTestResultScanRange'];
     }
 
@@ -286,16 +287,16 @@ class TestResultRepository
             'result_values' => serialize($testResult->getMessage()->getValues()),
             'result_submessages' => serialize($testResult->getSubMessages()),
         );
-
-        // store log of results
-        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_caretaker_testresult', $values);
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_caretaker_testresult');
+        $connection->insert('tx_caretaker_testresult', $values);
 
         // store last results for fast access
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_caretaker_lasttestresult', 'test_uid = ' . $test->getUid() . ' AND instance_uid = ' . $test->getInstance()->getUid(), '', '', 1);
         if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
             $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_caretaker_lasttestresult', 'uid = ' . $row['uid'], $values);
         } else {
-            $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_caretaker_lasttestresult', $values);
+            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_caretaker_lasttestresult');
+            $connection->insert('tx_caretaker_lasttestresult', $values);
         }
     }
 }

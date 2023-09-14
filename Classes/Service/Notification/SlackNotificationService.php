@@ -2,6 +2,9 @@
 
 namespace Caretaker\Caretaker\Service\Notification;
 
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use Caretaker\Caretaker\Entity\Node\InstanceNode;
 use Caretaker\Caretaker\Entity\Result\AggregatorResult;
 use Caretaker\Caretaker\Entity\Result\ResultMessage;
@@ -31,12 +34,12 @@ class SlackNotificationService extends AbstractNotificationService
     protected $notifications = [];
 
     /**
-     * @var null|\TYPO3\CMS\Core\Log\Logger
+     * @var null|Logger
      */
     protected $logger = null;
 
     /**
-     * @var null|\Caretaker\Caretaker\Service\SlackNotificationTimerService
+     * @var null|SlackNotificationTimerService
      */
     protected $slackNotificationTimerService = null;
 
@@ -47,7 +50,7 @@ class SlackNotificationService extends AbstractNotificationService
     public function __construct()
     {
         parent::__construct('slack');
-        $this->logger = GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         $this->slackNotificationTimerService = GeneralUtility::makeInstance(SlackNotificationTimerService::class);
     }
 
@@ -181,7 +184,7 @@ class SlackNotificationService extends AbstractNotificationService
     public function isEnabled()
     {
         $enabled = (bool)$this->getConfigValue('enabled');
-        return $enabled === true && TYPO3_MODE == 'BE';
+        return $enabled === true && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 
     /**
