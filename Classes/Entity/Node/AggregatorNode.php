@@ -8,11 +8,13 @@ use Caretaker\Caretaker\Entity\Result\NodeResult;
 use Caretaker\Caretaker\Entity\Result\ResultMessage;
 use Caretaker\Caretaker\Entity\Result\TestResultRange;
 use Caretaker\Caretaker\Repository\AggregatorResultRepository;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /***************************************************************
  * Copyright notice
  *
  * (c) 2009-2011 by n@work GmbH and networkteam GmbH
+ * (c) 2023 by in2code GmbH
  *
  * All rights reserved
  *
@@ -56,6 +58,9 @@ use Caretaker\Caretaker\Repository\AggregatorResultRepository;
  */
 abstract class AggregatorNode extends AbstractNode
 {
+    public function __construct(
+        private readonly ConnectionPool $connectionPool
+    ) {}
     /**
      * Child Nodes
      *
@@ -382,11 +387,20 @@ abstract class AggregatorNode extends AbstractNode
         if ($strategyCount <= 0) {
             $strategies = array();
         } else {
-            $strategies = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-                's.*',
-                Constants::table_Strategies . ' s,' . Constants::relationTable_Node2Strategy . ' rel',
-                'rel.uid_node=' . $this->getUid() . ' AND rel.node_table=\'' . $this->getStorageTable() . '\' AND rel.uid_strategy=s.uid' .
-                ' AND s.deleted = 0 AND s.hidden = 0');
+            $queryBuilder = $this->connectionPool->getQueryBuilderForTable(Constants::table_Strategies);
+            $queryBuilder->select(Constants::table_Strategies . '.*');
+            $queryBuilder->join(
+                Constants::table_Strategies,
+                Constants::relationTable_Node2Strategy,
+                'rel',
+                $queryBuilder->expr()->eq('rel.uid_strategy',$queryBuilder->quoteIdentifier(Constants::table_Strategies . '.uid'))
+            );
+            $queryBuilder->where(
+                $queryBuilder->expr()->eq('rel.uid_node', $queryBuilder->createNamedParameter($this->getUid() , Connection::PARAM_INT)),
+                $queryBuilder->expr()->eq('rel.node_table', $queryBuilder->createNamedParameter($this->getStorageTable()))
+            );
+            $result = $queryBuilder->executeQuery();
+            $strategies = $result->fetchAllAssociative();
         }
         if ($this->getParent()) {
             $strategies = array_merge($strategies, $this->getParent()->getStrategies());
