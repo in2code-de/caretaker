@@ -105,9 +105,16 @@ class TestResultRepository
     {
         $testUID = $testNode->getUid();
         $instanceUID = $testNode->getInstance()->getUid();
-
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_lasttestresult', 'test_uid=' . $testUID . ' AND instance_uid=' . $instanceUID, '', '', '1');
-        $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+        $row = $this->connectionPool
+            ->getConnectionForTable('tx_caretaker_lasttestresult')
+            ->select(
+                '*',
+                'tx_caretaker_lasttestresult',
+                [
+                    'test_uid' => $testUID,
+                    'instance_uid'=> $instanceUID
+                ])
+            ->fetchAssociative();
 
         if ($row) {
             $result = $this->dbrow2instance($row);
