@@ -6,6 +6,7 @@ namespace Caretaker\Caretaker\Repository;
  * Copyright notice
  *
  * (c) 2009-2011 by n@work GmbH and networkteam GmbH
+ * (c) 2023 by in2code GmbH
  *
  * All rights reserved
  *
@@ -74,7 +75,7 @@ class TestResultRepository
     /**
      * Private constructor use getInstance instead
      */
-    private function __construct()
+    private function __construct(private readonly ConnectionPool $connectionPool)
     {
         $confArray = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
         $this->lastTestResultScanRange = (int)$confArray['lastTestResultScanRange'];
@@ -287,7 +288,8 @@ class TestResultRepository
             'result_values' => serialize($testResult->getMessage()->getValues()),
             'result_submessages' => serialize($testResult->getSubMessages()),
         );
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_caretaker_testresult');
+        $connection = $this->connectionPool->getConnectionForTable('tx_caretaker_testresult');
+
         $connection->insert('tx_caretaker_testresult', $values);
 
         // store last results for fast access
@@ -295,7 +297,7 @@ class TestResultRepository
         if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
             $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_caretaker_lasttestresult', 'uid = ' . $row['uid'], $values);
         } else {
-            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_caretaker_lasttestresult');
+            $connection = $this->connectionPool->getConnectionForTable('tx_caretaker_lasttestresult');
             $connection->insert('tx_caretaker_lasttestresult', $values);
         }
     }
