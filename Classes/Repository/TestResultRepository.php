@@ -138,6 +138,18 @@ class TestResultRepository
             $testUID = $testNode->getUid();
             $instanceUID = $testNode->getInstance()->getUid();
 
+            $row = $this->connectionPool
+                ->getConnectionForTable('tx_caretaker_testresult')
+                ->select(
+                    '*',
+                    'tx_caretaker_testresult',
+                    [
+                        'test_uid' => $testUID,
+                        'instance_uid'=> $instanceUID,
+
+                    ])
+                ->fetchAssociative();
+
             $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 '*',
                 'tx_caretaker_testresult',
