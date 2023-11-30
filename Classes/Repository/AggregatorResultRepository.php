@@ -2,14 +2,13 @@
 
 namespace Caretaker\Caretaker\Repository;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use Caretaker\Caretaker\Entity\Node\AbstractNode;
 use Caretaker\Caretaker\Entity\Node\AggregatorNode;
 use Caretaker\Caretaker\Entity\Result\AggregatorResult;
 use Caretaker\Caretaker\Entity\Result\AggregatorResultRange;
 use Caretaker\Caretaker\Entity\Result\ResultMessage;
-use Caretaker\Caretaker\Repository\TestResultRepository;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /***************************************************************
  * Copyright notice
@@ -105,14 +104,17 @@ class AggregatorResultRepository
         $nodeType = $node->getType();
         $nodeUid = $node->getUid();
 
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_aggregatorresult', 'aggregator_uid=' . $nodeUid . ' AND aggregator_type="' . $nodeType . '" AND instance_uid=' . $instanceUid, '', 'tstamp DESC', '1');
-        $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+        $queryBuilder = $this->createBaseQueryBuilder($nodeUid, $nodeType, $instanceUid);
+        $queryResult = $queryBuilder
+            ->orderBy('tstamp', 'DESC')
+            ->setMaxResults(1)
+            ->executeQuery();
 
-        if ($row) {
+        while ($row = $queryResult->fetchAssociative()) {
             $result = $this->dbrow2instance($row);
-
             return $result;
         }
+
         return new AggregatorResult();
     }
 
@@ -138,10 +140,17 @@ class AggregatorResultRepository
         $nodeType = $node->getType();
         $nodeUid = $node->getUid();
 
-        $base_condition = 'aggregator_uid=' . $nodeUid . ' AND aggregator_type="' . $nodeType . '" AND instance_uid=' . $instanceUid;
+        $queryBuilder = $this->createBaseQueryBuilder($nodeUid, $nodeType, $instanceUid);
+        $queryBuilder
+            ->andWhere(
+                $queryBuilder->expr()->gte('tstamp', $queryBuilder->createNamedParameter($start_timestamp, \PDO::PARAM_INT)),
+                $queryBuilder->expr()->lte('tstamp', $queryBuilder->createNamedParameter($stop_timestamp, \PDO::PARAM_INT))
+            )
+            ->orderBy('tstamp', 'ASC');
 
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_aggregatorresult', $base_condition . ' AND tstamp >=' . $start_timestamp . ' AND tstamp <=' . $stop_timestamp, '', 'tstamp ASC');
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+        $resultRows = $queryBuilder->executeQuery();
+
+        while ($row = $resultRows->fetchAssociative()) {
             $result = $this->dbrow2instance($row);
             $result_range->addResult($result);
         }
@@ -149,9 +158,17 @@ class AggregatorResultRepository
         // add first value if needed
         $first = $result_range->getFirst();
         if (!$first || ($first && $first->getTimestamp() > $start_timestamp)) {
-            $GLOBALS['TYPO3_DB']->store_lastBuiltQuery = true;
-            $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_aggregatorresult', $base_condition . ' AND tstamp <' . $start_timestamp, '', 'tstamp DESC', 1);
-            if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+            $queryBuilder = $this->createBaseQueryBuilder($nodeUid, $nodeType, $instanceUid);
+            $queryBuilder
+                ->andWhere(
+                    $queryBuilder->expr()->lt('tstamp', $queryBuilder->createNamedParameter($start_timestamp, \PDO::PARAM_INT))
+                )
+                ->orderBy('tstamp', 'DESC')
+                ->setMaxResults(1);
+
+            $resultRows = $queryBuilder->executeQuery();
+
+            while ($row = $resultRows->fetchAssociative()) {
                 $row['tstamp'] = $start_timestamp;
                 $result = $this->dbrow2instance($row);
                 $result_range->addResult($result);
@@ -186,13 +203,15 @@ class AggregatorResultRepository
         $nodeType = $node->getType();
         $nodeUid = $node->getUid();
 
-        $base_condition = 'aggregator_uid=' . $nodeUid . ' AND aggregator_type="' . $nodeType . '" AND instance_uid=' . $instanceUid;
+        $queryBuilder = $this->createBaseQueryBuilder($nodeUid, $nodeType, $instanceUid);
+        $queryBuilder
+            ->select('COUNT(*) AS number')
+            ->setMaxResults(1);
 
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('COUNT(*) AS number', 'tx_caretaker_aggregatorresult', $base_condition, '', '', 1);
-        $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+        $row = $queryBuilder->executeQuery()->fetchAssociative();
 
         if ($row) {
-            return $row['number'];
+            return (int) $row['number'];
         }
         return 0;
     }
@@ -217,10 +236,14 @@ class AggregatorResultRepository
         $nodeType = $node->getType();
         $nodeUid = $node->getUid();
 
-        $base_condition = 'aggregator_uid=' . $nodeUid . ' AND aggregator_type="' . $nodeType . '" AND instance_uid=' . $instanceUid;
+        $queryBuilder = $this->createBaseQueryBuilder($nodeUid, $nodeType, $instanceUid);
+        $queryBuilder
+            ->orderBy('tstamp', 'DESC')
+            ->setFirstResult((int)$offset)
+            ->setMaxResults((int)$limit);
 
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_aggregatorresult', $base_condition, '', 'tstamp DESC', (int)$offset . ',' . (int)$limit);
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+        $resultRows = $queryBuilder->executeQuery();
+        while ($row = $resultRows->fetchAssociative()) {
             $result = $this->dbrow2instance($row);
             $result_range->addResult($result);
         }
@@ -263,7 +286,7 @@ class AggregatorResultRepository
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_caretaker_aggregatorresult');
         $connection->insert('tx_caretaker_aggregatorresult', $values);
 
-        return $GLOBALS['TYPO3_DB']->sql_insert_id();
+        return $connection->lastInsertId();
     }
 
     /**
@@ -281,12 +304,28 @@ class AggregatorResultRepository
             $row['result_status'],
             $row['result_num_undefined'],
             $row['result_num_ok'],
-            $row['result_num_warnig'],
+            $row['result_num_warning'],
             $row['result_num_error'],
             $message,
             $submessages
         );
 
         return $instance;
+    }
+
+    private function createBaseQueryBuilder($nodeUid, $nodeType, $instanceUid) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_caretaker_aggregatorresult');
+
+        $queryBuilder
+            ->select('*')
+            ->from('tx_caretaker_aggregatorresult')
+            ->where(
+                $queryBuilder->expr()->eq('aggregator_uid', $queryBuilder->createNamedParameter($nodeUid, \PDO::PARAM_INT)),
+                $queryBuilder->expr()->eq('aggregator_type', $queryBuilder->createNamedParameter($nodeType)),
+                $queryBuilder->expr()->eq('instance_uid', $queryBuilder->createNamedParameter($instanceUid, \PDO::PARAM_INT))
+            );
+
+        return $queryBuilder;
     }
 }
