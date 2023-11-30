@@ -94,7 +94,7 @@ class NodeRepository
                         }
                     }
                 } elseif ($testId > 0) {
-                    // find find directly assigned tests
+                    // find directly assigned tests
                     $instance_tests = $this->getTestsByInstanceUid($instance->getUid(), $instance, $show_hidden);
                     foreach ($instance_tests as $instance_test) {
                         if ($instance_test->getUid() == $testId) {
@@ -204,10 +204,8 @@ class NodeRepository
 
     /**
      * Get Singleton Instance
-     *
-     * @return NodeRepository
      */
-    public static function getInstance()
+    public static function getInstance(): ?NodeRepository
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -335,12 +333,22 @@ class NodeRepository
      */
     public function getInstancegroupByChildGroupUid($child_group_uid, $show_hidden = false)
     {
-        $hidden = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_instancegroup');
+        $queryBuilder->select('parent_group')
+            ->from('tx_caretaker_instancegroup')
+            ->where(
+                $queryBuilder->expr()->eq('deleted', 0),
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int)$child_group_uid, \PDO::PARAM_INT))
+            );
+
         if (!$show_hidden) {
-            $hidden = ' AND hidden=0 ';
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('hidden', 0)
+            );
         }
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('parent_group', 'tx_caretaker_instancegroup', 'deleted=0 ' . $hidden . ' AND uid=' . (int)$child_group_uid);
-        if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+
+        $row = $queryBuilder->executeQuery()->fetchAssociative();
+        if ($row) {
             $parent_item = $this->getInstancegroupByUid($row['parent_group']);
 
             return $parent_item;
@@ -404,13 +412,23 @@ class NodeRepository
      */
     public function getAllInstances($parent = false, $show_hidden = false)
     {
-        $hidden = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_instance');
+        $queryBuilder->select('*')
+            ->from('tx_caretaker_instance')
+            ->where(
+                $queryBuilder->expr()->eq('deleted', 0)
+            );
+
         if (!$show_hidden) {
-            $hidden = ' AND hidden=0 ';
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('hidden', 0)
+            );
         }
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_instance', 'deleted=0 ' . $hidden);
-        $result = array();
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+
+        $resultRows = $queryBuilder->executeQuery();
+        $result = [];
+
+        while ($row = $resultRows->fetchAssociative()) {
             $item = $this->dbrow2instance($row, $parent);
             if ($item) {
                 $result[] = $item;
