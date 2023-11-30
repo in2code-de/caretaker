@@ -323,6 +323,7 @@ class NodeRepository
             ->where(
                 $queryBuilder->expr()->eq('parent_group', $queryBuilder->createNamedParameter((int)$parent_group_uid, \PDO::PARAM_INT))
             )
+            ->groupBy('title')
             ->executeQuery();
 
         while ($row = $resultRows->fetchAssociative()) {
