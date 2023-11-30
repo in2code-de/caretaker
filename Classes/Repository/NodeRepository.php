@@ -243,9 +243,23 @@ class NodeRepository
         if (!$show_hidden) {
             $hidden = ' AND hidden=0 ';
         }
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_instancegroup', 'deleted=0' . $hidden);
-        $result = array();
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_instancegroup');
+        $queryBuilder->select('*')
+            ->from('tx_caretaker_instancegroup')
+            ->where(
+                $queryBuilder->expr()->eq('deleted', 0)
+            );
+
+        if ($hidden) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('hidden', $hidden)
+            );
+        }
+
+        $resultRows = $queryBuilder->executeQuery();
+        $result = [];
+
+        while ($row = $resultRows->fetchAssociative()) {
             $item = $this->dbrow2instancegroup($row, $parent);
             if ($item) {
                 $result[] = $item;
@@ -265,12 +279,21 @@ class NodeRepository
      */
     public function getInstancegroupByUid($uid, $parent = false, $show_hidden = false)
     {
-        $hidden = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_instancegroup');
+        $queryBuilder->select('*')
+            ->from('tx_caretaker_instancegroup')
+            ->where(
+                $queryBuilder->expr()->eq('deleted', 0),
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT))
+            );
+
         if (!$show_hidden) {
-            $hidden = ' AND hidden=0 ';
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('hidden', 0)
+            );
         }
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_instancegroup', 'deleted=0 ' . $hidden . ' AND uid=' . (int)$uid);
-        $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+
+        $row = $queryBuilder->executeQuery()->fetchAssociative();
         if ($row) {
             return $this->dbrow2instancegroup($row, $parent);
         }
