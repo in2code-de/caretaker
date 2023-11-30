@@ -6,6 +6,7 @@ namespace Caretaker\Caretaker\Repository;
  * Copyright notice
  *
  * (c) 2009-2011 by n@work GmbH and networkteam GmbH
+ * (c) 2023 by in2code GmbH
  *
  * All rights reserved
  *
@@ -27,6 +28,7 @@ namespace Caretaker\Caretaker\Repository;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -310,13 +312,20 @@ class NodeRepository
      */
     public function getInstancegroupsByParentGroupUid($parent_group_uid, $parent, $show_hidden = false)
     {
-        $hidden = '';
-        if (!$show_hidden) {
-            $hidden = ' AND hidden=0 ';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_instancegroup');
+        if ($show_hidden) {
+            $queryBuilder->getRestrictions()
+                ->removeByType(HiddenRestriction::class);
         }
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_instancegroup', 'deleted=0 ' . $hidden . ' AND parent_group=' . (int)$parent_group_uid, 'title');
-        $result = array();
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+        $resultRows = $queryBuilder
+            ->select('*')
+            ->from('tx_caretaker_instancegroup')
+            ->where(
+                $queryBuilder->expr()->eq('parent_group', $queryBuilder->createNamedParameter((int)$parent_group_uid, \PDO::PARAM_INT))
+            )
+            ->executeQuery();
+
+        while ($row = $resultRows->fetchAssociative()) {
             $item = $this->dbrow2instancegroup($row, $parent);
             if ($item) {
                 $result[] = $item;
