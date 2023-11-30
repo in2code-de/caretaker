@@ -544,11 +544,34 @@ class NodeRepository
             $newConfigurationOverrideEnabled = true;
         }
         if ($newConfigurationOverrideEnabled) {
-            $configurationOverrides = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'tx_caretaker_instance_override', 'type="test_configuration" AND instance=' . (int)$row['uid'] . ' AND deleted=0');
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_instance_override');
+            $configurationOverrides = $queryBuilder
+                ->select('*')
+                ->from('tx_caretaker_instance_override')
+                ->where(
+                    $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter('test_configuration')),
+                    $queryBuilder->expr()->eq('instance', $queryBuilder->createNamedParameter((int)$row['uid'], \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq('deleted', 0)
+                )
+                ->executeQuery()
+                ->fetchAllAssociative();
+
             if (is_array($configurationOverrides) && count($configurationOverrides) > 0) {
                 $instance->setTestConfigurations($configurationOverrides);
             }
-            $curlOptions = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'tx_caretaker_instance_override', 'type="curl_option" AND instance=' . (int)$row['uid'] . ' AND deleted=0');
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_instance_override');
+            $curlOptions = $queryBuilder
+                ->select('*')
+                ->from('tx_caretaker_instance_override')
+                ->where(
+                    $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter('curl_option')),
+                    $queryBuilder->expr()->eq('instance', $queryBuilder->createNamedParameter((int)$row['uid'], \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq('deleted', 0)
+                )
+                ->executeQuery()
+                ->fetchAllAssociative();
+
             if (is_array($curlOptions) && count($curlOptions) > 0) {
                 $instance->setCurlOptions($curlOptions);
             }
@@ -558,8 +581,6 @@ class NodeRepository
             }
         }
         $instance->setDbRow($row);
-
-        return $instance;
     }
 
     /*
@@ -571,17 +592,27 @@ class NodeRepository
      *
      * @param bool|AbstractNode $parent
      * @param bool $show_hidden
-     * @return TestgroupNode
+     * @return array
      */
     public function getAllTestgroups($parent = false, $show_hidden = false)
     {
-        $hidden = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_testgroup');
+        $queryBuilder->select('*')
+            ->from('tx_caretaker_testgroup')
+            ->where(
+                $queryBuilder->expr()->eq('deleted', 0)
+            );
+
         if (!$show_hidden) {
-            $hidden = ' AND hidden=0 ';
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('hidden', 0)
+            );
         }
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_testgroup', 'deleted=0 ' . $hidden);
-        $result = array();
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+
+        $resultRows = $queryBuilder->executeQuery();
+        $result = [];
+
+        while ($row = $resultRows->fetchAssociative()) {
             $result[] = $this->dbrow2testgroup($row, $parent);
         }
 
@@ -598,13 +629,22 @@ class NodeRepository
      */
     public function getTestgroupsByInstanceUid($instanceId, $parent = false, $show_hidden = false)
     {
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', 'tx_caretaker_instance_testgroup_mm', 'uid_local=' . (int)$instanceId, '', 'sorting');
-        $instance_group_ids = array();
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_instance_testgroup_mm');
+        $queryBuilder->select('uid_foreign')
+            ->from('tx_caretaker_instance_testgroup_mm')
+            ->where(
+                $queryBuilder->expr()->eq('uid_local', $queryBuilder->createNamedParameter((int)$instanceId, \PDO::PARAM_INT))
+            )
+            ->orderBy('sorting');
+
+        $resultRows = $queryBuilder->executeQuery();
+        $instance_group_ids = [];
+
+        while ($row = $resultRows->fetchAssociative()) {
             $instance_group_ids[] = $row['uid_foreign'];
         }
 
-        $result = array();
+        $result = [];
         foreach ($instance_group_ids as $id) {
             $item = $this->getTestgroupByUid($id, $parent, $show_hidden);
             if ($item) {
