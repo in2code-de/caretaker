@@ -166,18 +166,20 @@ class TestResultRepository
      * @param  TestNode $testNode
      * @return int
      */
-    public function getResultNumberByNode(TestNode $testNode)
+    public function getResultNumberByNode(TestNode $testNode): int
     {
         $testUID = $testNode->getUid();
         $instanceUID = $testNode->getInstance()->getUid();
 
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('COUNT(*) AS number', 'tx_caretaker_testresult', 'test_uid=' . $testUID . ' AND instance_uid=' . $instanceUID, '', '', '1');
-        $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-
-        if ($row) {
-            return (int)$row['number'];
-        }
-        return 0;
+        $connection = $this->connectionPool->getConnectionForTable('tx_caretaker_testresult');
+        return $connection->count(
+            '*',
+            'tx_caretaker_testresult',
+            [
+                'test_uid' => $testUID,
+                'instance_uid' => $instanceUID
+            ]
+        );
     }
 
     /**
