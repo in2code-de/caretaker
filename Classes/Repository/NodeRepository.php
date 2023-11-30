@@ -683,20 +683,32 @@ class NodeRepository
      * @param int $uid
      * @param bool|AbstractNode $parent
      * @param bool $show_hidden
-     * @return TestgroupNode
+     * @return array
      */
     public function getTestgroupByUid($uid, $parent = false, $show_hidden = false)
     {
-        $hidden = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_testgroup');
+        $queryBuilder->select('*')
+            ->from('tx_caretaker_testgroup')
+            ->where(
+                $queryBuilder->expr()->eq('deleted', 0),
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT))
+            );
+
         if (!$show_hidden) {
-            $hidden = ' AND hidden=0 ';
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('hidden', 0)
+            );
         }
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_testgroup', 'deleted=0 ' . $hidden . 'AND uid=' . (int)$uid);
-        $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-        if ($row) {
-            return $this->dbrow2testgroup($row, $parent);
+
+        $resultRows = $queryBuilder->executeQuery();
+        $result = [];
+
+        while ($row = $resultRows->fetchAssociative()) {
+            $result[] = $this->dbrow2testgroup($row, $parent);
         }
-        return false;
+
+        return $result;
     }
 
     /**
@@ -709,13 +721,24 @@ class NodeRepository
      */
     public function getTestgroupsByParentGroupUid($parent_group_uid, $parent, $show_hidden)
     {
-        $hidden = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_testgroup');
+        $queryBuilder->select('*')
+            ->from('tx_caretaker_testgroup')
+            ->where(
+                $queryBuilder->expr()->eq('deleted', 0),
+                $queryBuilder->expr()->eq('parent_group', $queryBuilder->createNamedParameter((int)$parent_group_uid, \PDO::PARAM_INT))
+            );
+
         if (!$show_hidden) {
-            $hidden = ' AND hidden=0 ';
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('hidden', 0)
+            );
         }
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_testgroup', 'deleted=0 ' . $hidden . ' AND parent_group=' . (int)$parent_group_uid);
-        $result = array();
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+
+        $resultRows = $queryBuilder->executeQuery();
+        $result = [];
+
+        while ($row = $resultRows->fetchAssociative()) {
             $result[] = $this->dbrow2testgroup($row, $parent);
         }
 
@@ -777,10 +800,20 @@ class NodeRepository
     public function getTestsByGroupUid($group_id, $parent = false, $show_hidden = false)
     {
         $ids = array();
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', 'tx_caretaker_testgroup_test_mm', 'uid_foreign=' . (int)$group_id, '', 'sorting_foreign');
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_testgroup_test_mm');
+        $queryBuilder->select('uid_local')
+            ->from('tx_caretaker_testgroup_test_mm')
+            ->where(
+                $queryBuilder->expr()->eq('uid_foreign',  $queryBuilder->createNamedParameter((int)$group_id, \PDO::PARAM_INT))
+            );
+
+
+        $resultRows = $queryBuilder->executeQuery();
+        while ($row = $resultRows->fetchAssociative()) {
             $ids[] = $row['uid_local'];
         }
+
         $tests = array();
         foreach ($ids as $uid) {
             $item = $this->getTestByUid($uid, $parent, $show_hidden);
@@ -800,13 +833,23 @@ class NodeRepository
      * @param bool $show_hidden
      * @return array
      */
-    public function getTestsByInstanceUid($instance_id, $parent = false, $show_hidden = false)
+    public function getTestsByInstanceUid($instance_id, $parent = false, $show_hidden = false): array
     {
         $ids = array();
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', 'tx_caretaker_instance_test_mm', 'uid_foreign=' . (int)$instance_id, '', 'sorting_foreign');
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_instance_test_mm');
+        $queryBuilder->select('uid_local')
+            ->from('tx_caretaker_instance_test_mm')
+            ->where(
+                $queryBuilder->expr()->eq('uid_foreign',  $queryBuilder->createNamedParameter((int)$instance_id, \PDO::PARAM_INT))
+            );
+
+
+        $resultRows = $queryBuilder->executeQuery();
+        while ($row = $resultRows->fetchAssociative()) {
             $ids[] = $row['uid_local'];
         }
+
         $tests = array();
         foreach ($ids as $uid) {
             $item = $this->getTestByUid($uid, $parent, $show_hidden);
@@ -824,25 +867,34 @@ class NodeRepository
      * @param int $uid
      * @param bool|AbstractNode $parent
      * @param bool $show_hidden
-     * @return TestNode
+     * @return bool|TestNode
      */
     public function getTestByUid($uid, $parent = false, $show_hidden = false)
     {
-        $hidden = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_test');
+        $queryBuilder->select('*')
+            ->addSelectLiteral('(
+        SELECT GROUP_CONCAT(r.id)
+        FROM tx_caretaker_roles r, tx_caretaker_test_roles_mm mm
+        WHERE mm.uid_local = tx_caretaker_test.uid
+        AND r.uid = mm.uid_foreign
+        ) as roles_ids')
+            ->from('tx_caretaker_test')
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq('deleted', 0),
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int)$uid, PDO::PARAM_INT))
+                )
+            );
+
         if (!$show_hidden) {
-            $hidden = ' AND hidden=0 ';
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('hidden', 0)
+            );
         }
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_caretaker_test.*, (
-	SELECT GROUP_CONCAT(r.id)
-	FROM tx_caretaker_roles r, tx_caretaker_test_roles_mm mm
-	WHERE mm.uid_local = tx_caretaker_test.uid
-	AND r.uid = mm.uid_foreign
-	AND deleted = 0 ' . $hidden . '
-	) as roles_ids',
-            'tx_caretaker_test',
-            'deleted=0 ' . $hidden . ' AND uid=' . (int)$uid);
-        $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-        if ($row) {
+        $resultRows = $queryBuilder->execute();
+
+        while ($row = $resultRows->fetchAssociative()) {
             $test = $this->dbrow2test($row, $parent);
             // the test may be disabled/hidden by configuration, so we need to double-check the hidden state
             if (!$show_hidden && $test->getHidden()) {
