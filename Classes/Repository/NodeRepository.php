@@ -25,6 +25,8 @@ namespace Caretaker\Caretaker\Repository;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -444,16 +446,25 @@ class NodeRepository
      * @param int $uid
      * @param $parent
      * @param $show_hidden
-     * @return InstanceNode
+     * @return bool|InstanceNode
      */
     public function getInstanceByUid($uid, $parent = null, $show_hidden = false)
     {
-        $hidden = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_instance');
+        $queryBuilder->select('*')
+            ->from('tx_caretaker_instance')
+            ->where(
+                $queryBuilder->expr()->eq('deleted', 0),
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT))
+            );
+
         if (!$show_hidden) {
-            $hidden = ' AND hidden=0 ';
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('hidden', 0)
+            );
         }
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_caretaker_instance', 'deleted=0 ' . $hidden . ' AND uid = ' . (int)$uid);
-        $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+
+        $row = $queryBuilder->executeQuery()->fetchAssociative();
         if ($row) {
             return $this->dbrow2instance($row, $parent);
         }
@@ -461,18 +472,27 @@ class NodeRepository
     }
 
     /**
-     * Get all Instances wich are part of Group X
+     * Get all Instances which are part of Group X
      *
      * @param int $uid
      * @param AbstractNode $parent
      * @param bool $show_hidden
      * @return array
      */
-    public function getInstancesByInstancegroupUid($uid, $parent = null, $show_hidden = false)
+    public function getInstancesByInstancegroupUid($uid, $parent = null, $show_hidden = false): array
     {
-        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'tx_caretaker_instance', 'instancegroup = ' . (int)$uid, '', 'title');
-        $result = array();
-        while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_caretaker_instance');
+        $queryBuilder->select('uid')
+            ->from('tx_caretaker_instance')
+            ->where(
+                $queryBuilder->expr()->eq('instancegroup', $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT))
+            )
+            ->orderBy('title');
+
+        $resultRows = $queryBuilder->executeQuery();
+        $result = [];
+
+        while ($row = $resultRows->fetchAssociative()) {
             $item = $this->getInstanceByUid($row['uid'], $parent, $show_hidden);
             if ($item) {
                 $result[] = $item;
