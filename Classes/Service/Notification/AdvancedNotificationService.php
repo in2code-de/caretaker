@@ -5,6 +5,7 @@ namespace Caretaker\Caretaker\Service\Notification;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use Caretaker\Caretaker\Constants;
 use Caretaker\Caretaker\Entity\Node\AbstractNode;
@@ -17,6 +18,7 @@ use Caretaker\Caretaker\Service\Notification\Exitpoint\NotificationExitPointInte
  * Copyright notice
  *
  * (c) 2009-2011 by n@work GmbH and networkteam GmbH
+ * (c) 2023 by in2code GmbH
  *
  * All rights reserved
  *
@@ -190,15 +192,22 @@ class AdvancedNotificationService extends AbstractNotificationService
             return $this->exitpoints[$identifier];
         }
         $exitpoint = false;
-        list($exitpointRecord) = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            '*',
-            Constants::table_Exitpoints,
-            'id = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($identifier, '') . ' AND deleted=0 AND hidden=0',
-            '',
-            '',
-            1
-        );
-        if ($exitpointRecord === null) {
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Constants::table_Exitpoints);
+        $exitpointRecord = $queryBuilder
+            ->select('*')
+            ->from(Constants::table_Exitpoints)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'id',
+                    $queryBuilder->createNamedParameter($identifier)
+                )
+            )
+            ->executeQuery()
+            ->fetchAssociative();
+
+        if ($exitpointRecord === false) {
             return false;
         }
         $info = ExtensionManagementUtility::findService('caretaker_exitpoint', $exitpointRecord['service']);
@@ -294,7 +303,7 @@ class AdvancedNotificationService extends AbstractNotificationService
                     $allowedChanges = GeneralUtility::trimExplode(',', $configValue);
                     $conditionApply = false;
                     foreach ($allowedChanges as $allowedChange) {
-                        list($from, $to) = GeneralUtility::trimExplode('>', $allowedChange);
+                        [$from, $to] = GeneralUtility::trimExplode('>', $allowedChange);
                         if ($this->matchConditionValue($to, $result->getStateInfo())
                             && $this->matchConditionValue($from, $lastResult->getStateInfo())
                         ) {
@@ -371,7 +380,7 @@ class AdvancedNotificationService extends AbstractNotificationService
 
         // schedule = 8-18
         if (!empty($schedule) && strpos($schedule, '-') !== false) {
-            list($start, $stop) = GeneralUtility::intExplode('-', $schedule, false, 2);
+            [$start, $stop] = GeneralUtility::intExplode('-', $schedule, false, 2);
         }
         // schedule.start = 8
         // schedule.end = 18
@@ -384,7 +393,7 @@ class AdvancedNotificationService extends AbstractNotificationService
 
         // schedule.monday = 8-18
         if (!empty($scheduleSub[$weekdays[$currentDayOfWeek]]) && strpos($scheduleSub[$weekdays[$currentDayOfWeek]], '-') !== false) {
-            list($start, $stop) = GeneralUtility::intExplode('-', $scheduleSub[$weekdays[$currentDayOfWeek]], false, 2);
+            [$start, $stop] = GeneralUtility::intExplode('-', $scheduleSub[$weekdays[$currentDayOfWeek]], false, 2);
         }
 
         // schedule.monday.start = 8
