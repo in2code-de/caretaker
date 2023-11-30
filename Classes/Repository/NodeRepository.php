@@ -702,7 +702,8 @@ class NodeRepository
             ->where(
                 $queryBuilder->expr()->eq('deleted', 0),
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT))
-            );
+            )
+            ->orderBy('sorting_foreign');
 
         if (!$show_hidden) {
             $queryBuilder->andWhere(
@@ -815,7 +816,8 @@ class NodeRepository
             ->from('tx_caretaker_testgroup_test_mm')
             ->where(
                 $queryBuilder->expr()->eq('uid_foreign',  $queryBuilder->createNamedParameter((int)$group_id, \PDO::PARAM_INT))
-            );
+            )
+            ->orderBy('sorting_foreign');
 
 
         $resultRows = $queryBuilder->executeQuery();
