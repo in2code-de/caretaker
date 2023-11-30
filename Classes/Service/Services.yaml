@@ -4,9 +4,9 @@ services:
     autoconfigure: true
     public: false
 
-  T3docs\Examples\:
+  Caretaker\Caretaker\:
     resource: '../Classes/*'
     exclude: '../Classes/Domain/Model/*'
 
-  T3docs\Examples\Controller\AdminModuleController:
+  Caretaker\Caretaker\Controller\AdminModuleController:
     tags: ['backend.controller']
