@@ -18,7 +18,7 @@
                 CARETAKER INSTANCE GROUP
             -->
             <trans-unit id="tx_caretaker_instancegroup" xml:space="preserve">
-                <source>Instancegroup</source>
+                <source>Instance Group</source>
             </trans-unit>
             <trans-unit id="tx_caretaker_instancegroup.tab.description" xml:space="preserve">
                 <source>Description</source>

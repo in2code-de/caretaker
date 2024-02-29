@@ -130,7 +130,7 @@ class ServiceHelper
             }
         }
 
-        if (!$GLOBALS['T3_SERVICES']['caretaker_test_service'][$key]) {
+        /*if (!$GLOBALS['T3_SERVICES']['caretaker_test_service'][$key]) {
             // Register test service
             ExtensionManagementUtility::addService(
                 'caretaker',
@@ -155,7 +155,7 @@ class ServiceHelper
 
             // Add flexform to service-item
             self::$tcaTestConfigDs[$key] = 'FILE:EXT:' . $extKey . '/' . $path . '/' . 'ds.' . $key . 'TestService.xml';
-        }
+        }*/
     }
 
     /**
