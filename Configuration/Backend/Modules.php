@@ -11,9 +11,10 @@ return [
         'standalone' => true,
         'access' => 'user',
         'workspaces' => 'live',
-        'path' => '/module/caretaker',
-        'labels' => 'Caretaker',
+        'path' => '/module/caretaker/',
+        'labels' => 'LLL:EXT:caretaker/Resources/Private/Language/locallang_mod.xlf',
         'extensionName' => 'Caretaker',
+        'navigationComponent' => '@typo3/backend/page-tree/page-tree-element',
         'controllerActions' => [
             AdminModuleController::class => [
                 'index', 'debug',

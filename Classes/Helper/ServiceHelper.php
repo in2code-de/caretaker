@@ -130,7 +130,9 @@ class ServiceHelper
             }
         }
 
-        if (!$GLOBALS['T3_SERVICES']['caretaker_test_service'][$key]) {
+        // todo - reactivate code
+        if (0==1) {
+        //if (!$GLOBALS['T3_SERVICES']['caretaker_test_service'][$key]) {
             // Register test service
             ExtensionManagementUtility::addService(
                 'caretaker',
