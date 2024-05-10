@@ -58,6 +58,7 @@ use Caretaker\Caretaker\Entity\Result\TestResultRange;
  */
 class TestResultRepository
 {
+    public const TABLE_NAME = 'tx_caretaker_testresult';
     /**
      * Reference to the current Instance
      *
@@ -93,6 +94,17 @@ class TestResultRepository
         }
 
         return self::$instance;
+    }
+
+    public function findByUidRaw(int $uid): array
+    {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE_NAME);
+        return $queryBuilder->select('*')
+            ->from(self::TABLE_NAME)
+            ->where('uid = :uid')
+            ->setParameter('uid', $uid)
+            ->executeQuery()
+            ->fetchAllAssociative()[0];
     }
 
     /**
