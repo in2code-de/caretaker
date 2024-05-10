@@ -527,4 +527,22 @@ class TestNode extends AbstractNode
     {
         return $this->rolesIds;
     }
+
+    /**
+     * @return string
+     */
+    public function getTestServiceType(): string
+    {
+        return $this->testServiceType;
+    }
+
+    /**
+     * @param string $testServiceType
+     * @return $this
+     */
+    public function setTestServiceType(string $testServiceType): self
+    {
+        $this->testServiceType = $testServiceType;
+        return $this;
+    }
 }
