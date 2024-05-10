@@ -68,7 +68,7 @@ class AggregatorResultRepository
     /**
      * Private constructor use getInstance instead
      */
-    private function __construct()
+    public function __construct()
     {
     }
 

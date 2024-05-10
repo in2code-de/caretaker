@@ -76,7 +76,7 @@ class TestResultRepository
     /**
      * Private constructor use getInstance instead
      */
-    private function __construct(private readonly ConnectionPool $connectionPool)
+    public function __construct(private readonly ConnectionPool $connectionPool)
     {
         $confArray = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('caretaker');
         $this->lastTestResultScanRange = (int)$confArray['lastTestResultScanRange'];

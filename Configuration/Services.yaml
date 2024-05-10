@@ -4,6 +4,10 @@ services:
     autoconfigure: true
     public: false
 
+  Caretaker\Caretaker\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Entity/*'
+
   Caretaker\Caretaker\Command\RunTestCommand:
     tags:
       - name: console.command
