@@ -81,6 +81,7 @@ class AggregatorResult extends NodeResult
     /**
      * Constructor
      *
+     * @param int $uid
      * @param int $timestamp
      * @param int $state
      * @param int $num_undefined
@@ -88,12 +89,20 @@ class AggregatorResult extends NodeResult
      * @param int $num_warning
      * @param int $num_error
      * @param mixed $message String or tx_caretaker_ResultMessage object
-     * @param array $submessages array of tx_caretaker_ResultMessage objects
-     *
+     * @param array|null $submessages array of tx_caretaker_ResultMessage objects
      */
-    public function __construct($timestamp = 0, $state = Constants::state_undefined, $num_undefined = 0, $num_ok = 0, $num_warning = 0, $num_error = 0, $message = '', $submessages = null)
-    {
-        parent::__construct($timestamp, $state, $message, $submessages);
+    public function __construct(
+        int $uid = 0,
+        int $timestamp = 0,
+        int $state = Constants::state_undefined,
+        int $num_undefined = 0,
+        int $num_ok = 0,
+        int $num_warning = 0,
+        int $num_error = 0,
+        string $message = '',
+        ?array $submessages = null
+    ) {
+        parent::__construct($uid, $timestamp, $state, $message, $submessages);
         $this->num_UNDEFINED = $num_undefined;
         $this->num_OK = $num_ok;
         $this->num_WARNING = $num_warning;
@@ -122,14 +131,21 @@ class AggregatorResult extends NodeResult
      * @param int $num_warning
      * @param int $num_error
      * @param mixed $message String or tx_caretaker_ResultMessage object
-     * @param array $submessages array of tx_caretaker_ResultMessage objects
+     * @param array|null $submessages array of tx_caretaker_ResultMessage objects
      * @return AggregatorResult
      */
-    public static function create($state = Constants::state_undefined, $num_undefined = 0, $num_ok = 0, $num_warning = 0, $num_error = 0, $message = '', $submessages = null)
-    {
+    public static function create(
+        int $state = Constants::state_undefined,
+        int $num_undefined = 0,
+        int $num_ok = 0,
+        int $num_warning = 0,
+        int $num_error = 0,
+        string $message = '',
+        ?array $submessages = null
+    ) {
         $timestamp = time();
 
-        return new self($timestamp, $state, $num_undefined, $num_ok, $num_warning, $num_error, $message, $submessages);
+        return new self(0, $timestamp, $state, $num_undefined, $num_ok, $num_warning, $num_error, $message, $submessages);
     }
 
     /**

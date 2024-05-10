@@ -60,15 +60,22 @@ class TestResult extends NodeResult
     /**
      * Constructor
      *
+     * @param int $uid
      * @param int $timestamp
      * @param int $state
      * @param float|int $value
      * @param string $message
      * @param array $submessages
      */
-    public function __construct($timestamp = 0, $state = Constants::state_undefined, $value = 0, $message = '', $submessages = array())
-    {
-        parent::__construct($timestamp, $state, $message, $submessages);
+    public function __construct(
+        int $uid = 0,
+        int $timestamp = 0,
+        int $state = Constants::state_undefined,
+        float|int $value = 0,
+        string $message = '',
+        array $submessages = []
+    ) {
+        parent::__construct($uid, $timestamp, $state, $message, $submessages);
         $this->value = $value;
     }
 

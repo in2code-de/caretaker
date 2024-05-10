@@ -250,7 +250,14 @@ class TestResultRepository
         $last = $result_range->getLast();
         if ($last && $last->getTimestamp() < $stop_timestamp) {
             if ($graph) {
-                $real_last = new TestResult($stop_timestamp, $last->getState(), $last->getValue(), $last->getMessage()->getText(), $last->getSubMessages());
+                $real_last = new TestResult(
+                    $last->getUid(),
+                    $stop_timestamp,
+                    $last->getState(),
+                    $last->getValue(),
+                    $last->getMessage()->getText(),
+                    $last->getSubMessages()
+                );
                 $result_range->addResult($real_last);
             }
         }
@@ -269,6 +276,7 @@ class TestResultRepository
         $message = new ResultMessage($row['result_msg'], unserialize($row['result_values']));
         $submessages = ($row['result_submessages']) ? unserialize($row['result_submessages']) : array();
         $instance = new TestResult(
+            $row['uid'],
             $row['tstamp'],
             $row['result_status'],
             $row['result_value'],

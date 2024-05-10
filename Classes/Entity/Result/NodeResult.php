@@ -53,6 +53,11 @@ use Caretaker\Caretaker\Helper\LocalizationHelper;
 abstract class NodeResult
 {
     /**
+     * @var int
+     */
+    protected int $uid;
+
+    /**
      * Status Code of the Test Result
      *
      * @var int
@@ -83,12 +88,13 @@ abstract class NodeResult
     /**
      * Constructor
      *
+     * @param int $uid
      * @param int $timestamp Timestamp of the result
      * @param int $state Status of the result
      * @param mixed $message Result message (string or ResultMessage Object )
      * @param array $submessages
      */
-    public function __construct($timestamp, $state, $message, $submessages)
+    public function __construct(int $uid, int $timestamp, int $state, mixed $message, array $submessages)
     {
         $this->timestamp = (int)$timestamp;
         $this->state = (int)$state;
@@ -235,6 +241,17 @@ abstract class NodeResult
             return true;
         }
         return false;
+    }
+
+    public function getUid(): int
+    {
+        return $this->uid;
+    }
+
+    public function setUid(int $uid): self
+    {
+        $this->uid = $uid;
+        return $this;
     }
 
     /**

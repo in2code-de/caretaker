@@ -179,7 +179,16 @@ class AggregatorResultRepository
         /** @var AggregatorResult $last */
         $last = $result_range->getLast();
         if ($last && $last->getTimestamp() < $stop_timestamp) {
-            $real_last = new AggregatorResult($stop_timestamp, $last->getState(), $last->getNumUNDEFINED(), $last->getNumOK(), $last->getNumWARNING(), $last->getNumERROR(), $last->getMessage()->getText());
+            $real_last = new AggregatorResult(
+                $last->getUid(),
+                $stop_timestamp,
+                $last->getState(),
+                $last->getNumUNDEFINED(),
+                $last->getNumOK(),
+                $last->getNumWARNING(),
+                $last->getNumERROR(),
+                $last->getMessage()->getText()
+            );
             $result_range->addResult($real_last);
         }
 
@@ -300,6 +309,7 @@ class AggregatorResultRepository
         $message = new ResultMessage($row['result_msg'], unserialize($row['result_values']));
         $submessages = ($row['result_submessages']) ? unserialize($row['result_submessages']) : array();
         $instance = new AggregatorResult(
+            $row['uid'],
             $row['tstamp'],
             $row['result_status'],
             $row['result_num_undefined'],
