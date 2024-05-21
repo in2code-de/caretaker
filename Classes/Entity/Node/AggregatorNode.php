@@ -63,8 +63,8 @@ abstract class AggregatorNode extends AbstractNode
     public function __construct(
         int $uid,
         string $title,
-        AbstractNode $parent,
-        string $storageTable,
+        ?AbstractNode $parent,
+        ?string $storageTable,
         string $type = '',
         bool $hidden = false
     ) {

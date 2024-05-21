@@ -127,7 +127,7 @@ abstract class AbstractNode
      *
      * @param int $uid
      * @param string $title
-     * @param AbstractNode $parent
+     * @param AbstractNode|null $parent
      * @param string $storageTable
      * @param string $type
      * @param string|bool $hidden
