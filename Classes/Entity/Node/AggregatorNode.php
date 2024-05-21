@@ -58,9 +58,19 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
  */
 abstract class AggregatorNode extends AbstractNode
 {
+    private ConnectionPool $connectionPool;
+
     public function __construct(
-        private readonly ConnectionPool $connectionPool
-    ) {}
+        int $uid,
+        string $title,
+        AbstractNode $parent,
+        string $storageTable,
+        string $type = '',
+        bool $hidden = false
+    ) {
+        parent::__construct($uid, $title, $parent, $storageTable, $type, $hidden);
+        $this->connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+    }
     /**
      * Child Nodes
      *
