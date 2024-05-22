@@ -895,7 +895,7 @@ class NodeRepository
             ->where(
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->eq('deleted', 0),
-                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int)$uid, PDO::PARAM_INT))
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT))
                 )
             );
 
