@@ -59,19 +59,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AggregatorNode extends AbstractNode
 {
-    private ConnectionPool $connectionPool;
-
-    public function __construct(
-        int $uid,
-        string $title,
-        ?AbstractNode $parent,
-        ?string $storageTable,
-        string $type = '',
-        bool $hidden = false
-    ) {
-        parent::__construct($uid, $title, $parent, $storageTable, $type, $hidden);
-        $this->connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-    }
     /**
      * Child Nodes
      *
@@ -398,7 +385,8 @@ abstract class AggregatorNode extends AbstractNode
         if ($strategyCount <= 0) {
             $strategies = array();
         } else {
-            $queryBuilder = $this->connectionPool->getQueryBuilderForTable(Constants::table_Strategies);
+            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+            $queryBuilder = $connectionPool->getQueryBuilderForTable(Constants::table_Strategies);
             $queryBuilder->select(Constants::table_Strategies . '.*');
             $queryBuilder->join(
                 Constants::table_Strategies,
