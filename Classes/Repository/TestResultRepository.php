@@ -96,17 +96,21 @@ class TestResultRepository
         return self::$instance;
     }
 
-    public function findByUidRaw(int $uid): array
+    public function getTestServiceByUid(int $uid): ?string
     {
-        $queryBuilder = $this->connectionPool->getConnectionForTable(self::TABLE_NAME);
-        return $queryBuilder->select(
-            ['*'],
-            self::TABLE_NAME,
-            [
-                'uid' => $uid,
-            ]
-        )
-            ->fetchAllAssociative()[0] ?? [];
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE_NAME);
+        return $queryBuilder->select('t.test_service')
+            ->from('tx_caretaker_test', 't')
+            ->innerJoin(
+                't',
+                'tx_caretaker_testresult',
+                'tr',
+                $queryBuilder->expr()->eq('t.uid', 'tr.test_uid')
+            )
+            ->where('tr.uid = :uid')
+            ->setParameter('uid', $uid)
+            ->executeQuery()
+            ->fetchOne();
     }
 
     /**
