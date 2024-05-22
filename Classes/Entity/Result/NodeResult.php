@@ -55,7 +55,7 @@ abstract class NodeResult
     /**
      * @var int
      */
-    protected int $uid;
+    protected int $uid = 0;
 
     /**
      * Status Code of the Test Result
