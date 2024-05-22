@@ -96,6 +96,7 @@ abstract class NodeResult
      */
     public function __construct(int $uid, int $timestamp, int $state, mixed $message, array $submessages)
     {
+        $this->uid = $uid;
         $this->timestamp = (int)$timestamp;
         $this->state = (int)$state;
 

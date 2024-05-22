@@ -104,7 +104,7 @@ class TestResultRepository
             ->where('uid = :uid')
             ->setParameter('uid', $uid)
             ->executeQuery()
-            ->fetchAllAssociative()[0];
+            ->fetchAllAssociative()[0] ?? [];
     }
 
     /**
