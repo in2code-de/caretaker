@@ -98,12 +98,14 @@ class TestResultRepository
 
     public function findByUidRaw(int $uid): array
     {
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE_NAME);
-        return $queryBuilder->select('*')
-            ->from(self::TABLE_NAME)
-            ->where('uid = :uid')
-            ->setParameter('uid', $uid)
-            ->executeQuery()
+        $queryBuilder = $this->connectionPool->getConnectionForTable(self::TABLE_NAME);
+        return $queryBuilder->select(
+            ['*'],
+            self::TABLE_NAME,
+            [
+                'uid' => $uid,
+            ]
+        )
             ->fetchAllAssociative()[0] ?? [];
     }
 
@@ -120,7 +122,7 @@ class TestResultRepository
         $row = $this->connectionPool
             ->getConnectionForTable('tx_caretaker_lasttestresult')
             ->select(
-                '*',
+                ['*'],
                 'tx_caretaker_lasttestresult',
                 [
                     'test_uid' => $testUID,
