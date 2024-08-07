@@ -20,7 +20,10 @@ class Client
         $this->client = new \GuzzleHttp\Client(
             [
                 'base_uri' => self::BASE_URL,
-                'headers' => ['content-type' => 'application/json; charset=utf-8'],
+                'headers' => [
+                    'content-type' => 'application/json; charset=utf-8',
+                    'Authorization' => 'Bearer ' . $token,
+                ],
             ]
         );
 
@@ -33,7 +36,7 @@ class Client
      */
     public function postMessage($options)
     {
-        return $this->sendRequest('chat.postMessage', $options);
+        return $this->client->post('chat.postMessage', [\GuzzleHttp\RequestOptions::JSON => $options]);
     }
 
     /**
@@ -41,17 +44,6 @@ class Client
      */
     public function getChannels()
     {
-        return $this->sendRequest('conversations.list', ['exclude_archived' => true, 'limit' => 500])->getBody();
-    }
-
-    /**
-     * @param string $method
-     * @param array $options
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    protected function sendRequest($method, $options = null)
-    {
-        $options['token'] = $this->token;
-        return $this->client->get($method . '?' . http_build_query($options));
+        return $this->client->get('conversations.list', ['exclude_archived' => true, 'limit' => 500])->getBody();
     }
 }
